@@ -27,7 +27,7 @@ class Goal {
   final DateTime? nextReminderAt;
 
   /// When we last sent a reminder for this goal.
-  final DateTime? lastReminderAt;
+  final DateTime? lastNotifiedAt;
 
   /// Escalation stage (0,1,2…).
   final int? reminderLevel;
@@ -55,7 +55,7 @@ class Goal {
     this.lastProgressAt,
     this.completedAt,
     this.nextReminderAt,
-    this.lastReminderAt,
+    this.lastNotifiedAt,
     this.reminderLevel, // default logic handled in fromMap/draft
     this.goalMutedUntil,
     this.subtaskTouchedAt, // normalized in fromMap/draft
@@ -159,7 +159,7 @@ class Goal {
       lastProgressAt: lastProgressAt,
       completedAt: completedAt,
       nextReminderAt: nextReminderAt,
-      lastReminderAt: lastReminderAt,
+      lastNotifiedAt: lastReminderAt,
       reminderLevel: reminderLevel,
       goalMutedUntil: goalMutedUntil,
       subtaskTouchedAt: subtaskTouchedAt,
@@ -180,7 +180,7 @@ class Goal {
       'lastProgressAt': lastProgressAt,
       'completedAt': completedAt,
       'nextReminderAt': nextReminderAt,
-      'lastReminderAt': lastReminderAt,
+      'lastReminderAt': lastNotifiedAt,
       'reminderLevel': reminderLevel,
       'goalMutedUntil': goalMutedUntil,
       'subtaskTouchedAt': subtaskTouchedAt,
@@ -236,7 +236,7 @@ class Goal {
       lastProgressAt: lastProgressAt ?? this.lastProgressAt,
       completedAt: completedAt ?? this.completedAt,
       nextReminderAt: nextReminderAt ?? this.nextReminderAt,
-      lastReminderAt: lastReminderAt ?? this.lastReminderAt,
+      lastNotifiedAt: lastReminderAt ?? lastNotifiedAt,
       reminderLevel: reminderLevel ?? this.reminderLevel,
       goalMutedUntil: goalMutedUntil ?? this.goalMutedUntil,
       subtaskTouchedAt: touched,
@@ -303,7 +303,7 @@ class Goal {
       lastProgressAt: now, // start equal to creation time
       completedAt: null,
       nextReminderAt: null,
-      lastReminderAt: null,
+      lastNotifiedAt: null,
       reminderLevel: 0,
       goalMutedUntil: null,
       subtaskTouchedAt: List<DateTime?>.filled(trimmed.length, null),

@@ -9,35 +9,36 @@ plugins {
 }
 
 android {
-    namespace = "com.example.softai"
+    namespace = "com.skillena.softai"
     compileSdk = flutter.compileSdkVersion
     ndkVersion = flutter.ndkVersion
 
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_1_8
         targetCompatibility = JavaVersion.VERSION_1_8
+        coreLibraryDesugaringEnabled true 
     }
 
     kotlinOptions {
         jvmTarget = JavaVersion.VERSION_1_8
     }
 
-    defaultConfig {
-        // TODO: Specify your own unique Application ID (https://developer.android.com/studio/build/application-id.html).
-        applicationId = "com.example.softai"
-        // You can update the following values to match your application needs.
-        // For more information, see: https://flutter.dev/to/review-gradle-config.
-        minSdkVersion = flutter.minSdkVersion
-        targetSdk = flutter.targetSdkVersion
-        versionCode = flutter.versionCode
-        versionName = flutter.versionName
-    }
-
+   defaultConfig {
+       applicationId "com.skillena.softai"
+       minSdkVersion flutter.minSdkVersion
+       targetSdk = flutter.targetSdkVersion
+       versionCode = flutter.versionCode
+       versionName = flutter.versionName
+       multiDexEnabled true
+}
     buildTypes {
         release {
             // TODO: Add your own signing config for the release build.
             // Signing with the debug keys for now, so `flutter run --release` works.
+            minifyEnabled false
+            shrinkResources false
             signingConfig = signingConfigs.debug
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
     }
 }
@@ -45,3 +46,13 @@ android {
 flutter {
     source = "../.."
 }
+
+dependencies {
+  // Use BoM to keep Firebase libs in sync
+  implementation platform('com.google.firebase:firebase-bom:33.5.1')
+  implementation 'com.google.firebase:firebase-messaging-ktx'
+  implementation 'androidx.multidex:multidex:2.0.1'
+  implementation 'com.google.firebase:firebase-analytics-ktx' // optional, but useful
+  coreLibraryDesugaring 'com.android.tools:desugar_jdk_libs:2.1.4'
+}
+

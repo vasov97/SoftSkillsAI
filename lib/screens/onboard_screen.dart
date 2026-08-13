@@ -75,35 +75,54 @@ class _OnboardScreenState extends State<OnboardScreen>
     super.dispose();
   }
 
-  Widget _buildSpeechBubble() {
-    return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(16),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withOpacity(0.2),
-            blurRadius: 4,
-            offset: const Offset(2, 2),
-          ),
-        ],
-      ),
-      child: Text(
-        context.l10n.helloSkillPrompt,
-        style: TextStyle(
-          fontFamily: 'Montserrat',
-          fontSize: 16,
-          color: Colors.black87,
-        ),
-      ),
-    );
-  }
-
   @override
   Widget build(BuildContext context) {
     final l10n = context.l10n;
     return Scaffold(
+      extendBodyBehindAppBar: true,
+      appBar: AppBar(
+        backgroundColor: Colors.transparent,
+        // backgroundColor: const Color(0xFF006FFF),
+
+        elevation: 0,
+        scrolledUnderElevation: 0,
+        leading: IconButton(
+          icon: const Icon(Icons.arrow_back_ios, color: Colors.white),
+          onPressed: () => Navigator.of(context).pop(),
+        ),
+        title: Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            const Text(
+              'Skillena',
+              style: TextStyle(
+                fontFamily: 'Montserrat',
+                color: Colors.white,
+                fontSize: 28,
+                fontWeight: FontWeight.w800,
+              ),
+            ),
+            const SizedBox(width: 6),
+            Container(
+              padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 2),
+              decoration: BoxDecoration(
+                color: const Color.fromARGB(255, 84, 204, 204),
+                borderRadius: BorderRadius.circular(10),
+              ),
+              child: const Text(
+                'AI',
+                style: TextStyle(
+                  fontFamily: 'Montserrat',
+                  color: Colors.white,
+                  fontSize: 16,
+                  fontWeight: FontWeight.w800,
+                ),
+              ),
+            ),
+          ],
+        ),
+        centerTitle: true,
+      ),
       body: BlocBuilder<UserCubit, UserState>(
         bloc: userCubit,
         builder: (context, state) {
@@ -119,16 +138,21 @@ class _OnboardScreenState extends State<OnboardScreen>
                     begin: Alignment.topCenter,
                     end: Alignment.bottomCenter,
                     colors: [
-                      Color(0xFF007BFF),
-                      Color(0xFF00FFD5),
+                      Color(0xFF006FFF),
+                      Color(0xFF00AAF2),
+                      Color(0xFF00E5E5),
+                      Color(0xFF0BFF96),
                     ],
+                    stops: [0.0, 0.24, 0.49, 1.0],
                   ),
                 ),
               ),
-
+              SizedBox(
+                height: 32,
+              ),
               // Animated Avatar and Bubble
               Positioned(
-                bottom: 120,
+                bottom: 90,
                 child: AnimatedBuilder(
                   animation: _controller,
                   builder: (context, child) {
@@ -142,85 +166,46 @@ class _OnboardScreenState extends State<OnboardScreen>
                           Positioned(
                             left: -16,
                             top: 32,
-                            child: Opacity(
-                              opacity: _bubbleOpacity.value,
-                              child: _buildSpeechBubble(),
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(
+                                  context.l10n.helloSkillPrompt,
+                                  style: TextStyle(
+                                    fontFamily: 'Montserrat',
+                                    fontSize: 28,
+                                    color: Colors.white,
+                                    fontWeight: FontWeight.w700,
+                                  ),
+                                ),
+                                SizedBox(
+                                  height: 12,
+                                ),
+                                // Text(
+                                //   context.l10n.onboardSubtitle,
+                                //   style: TextStyle(
+                                //     fontFamily: 'Montserrat',
+                                //     fontSize: 16,
+                                //     color: Colors.white,
+                                //     fontWeight: FontWeight.w400,
+                                //   ),
+                                // ),
+                              ],
                             ),
                           ),
                           // Avatar
-                          Positioned(
-                            right: 0,
-                            top: 48,
-                            child: Opacity(
-                              opacity: _avatarOpacity.value,
-                              child: Image.asset(
-                                'assets/avatar.png',
-                                scale: 3.5,
-                              ),
-                            ),
-                          ),
+
                           Positioned(
                             bottom: 0,
-                            left: 0,
-                            right: 0,
-                            top: 320, // position below avatar & bubble
+                            left: -40,
+                            right: -12,
+                            top: 100, // position below avatar & bubble
                             child: Opacity(
                               opacity: _skillsOpacity.value,
                               child: Container(
                                   padding: const EdgeInsets.symmetric(
                                       horizontal: 16, vertical: 12),
-                                  child:
-                                      // BlocBuilder<UserCubit, UserState>(
-                                      //   bloc: userCubit,
-                                      //   builder: (context, state) {
-                                      //     if (state is UserLoading ||
-                                      //         state is UserInitial) {
-                                      //       return const Center(
-                                      //           child: CircularProgressIndicator());
-                                      //     }
-
-                                      //     if (state is UserError) {
-                                      //       return Center(child: Text(state.message));
-                                      //     }
-                                      //     if (state is UserLoaded) {
-                                      //       final user = state.user;
-                                      //       final userSkills = user.selectedSkills;
-                                      //       return Scrollbar(
-                                      //         controller: _scrollController,
-                                      //         thumbVisibility: true,
-                                      //         child: Padding(
-                                      //           padding: const EdgeInsets.all(8.0),
-                                      //           child: ListView(
-                                      //             controller: _scrollController,
-                                      //             children: [
-                                      //               for (final skill in _skillsList)
-                                      //                 _SoftSkillTile(
-                                      //                   text: context
-                                      //                       .getSkillTranslation(
-                                      //                           skill, l10n),
-                                      //                   isSelected: user
-                                      //                       .selectedSkills
-                                      //                       .containsKey(skill),
-                                      //                   isDisabled: userSkills
-                                      //                       .containsKey(skill),
-                                      //                   onTap: () {
-                                      //                     userCubit
-                                      //                         .toggleSkill(skill);
-                                      //                     setState(() {
-                                      //                       _newlySelectedSkills
-                                      //                           .add(skill);
-                                      //                     });
-                                      //                   },
-                                      //                 ),
-                                      //             ],
-                                      //           ),
-                                      //         ),
-                                      //       );
-                                      //     }
-                                      //     return const SizedBox.shrink();
-                                      //   },
-                                      // ),
-                                      BlocBuilder<UserCubit, UserState>(
+                                  child: BlocBuilder<UserCubit, UserState>(
                                     bloc: userCubit,
                                     builder: (context, state) {
                                       if (state is UserLoading ||
@@ -251,30 +236,93 @@ class _OnboardScreenState extends State<OnboardScreen>
                                                 final isSelected = userSkills
                                                     .containsKey(skill);
 
+                                                // return _SoftSkillTile(
+                                                //   skillKey: skill,
+                                                //   text: context
+                                                //       .getSkillTranslation(
+                                                //           skill, l10n),
+                                                //   isSelected: isSelected,
+                                                //   isDisabled:
+                                                //       isSelected, // keep your original behavior
+                                                //   onTap: () async {
+                                                //     // await userCubit.toggleSkill(
+                                                //     //   skillName: skill,
+                                                //     // );
+                                                //     // // local UI hint you already had
+                                                //     // setState(() {
+                                                //     //   _newlySelectedSkills
+                                                //     //       .add(skill);
+                                                //     // });
+
+                                                //   },
+                                                // );
                                                 return _SoftSkillTile(
+                                                  skillKey: skill,
                                                   text: context
                                                       .getSkillTranslation(
                                                           skill, l10n),
                                                   isSelected: isSelected,
-                                                  isDisabled:
-                                                      isSelected, // keep your original behavior
+                                                  isDisabled: false,
                                                   onTap: () async {
-                                                    // New signature:
-                                                    // Future<void> toggleSkill({required String goalId, required int index, required bool done})
-                                                    await userCubit.toggleSkill(
-                                                      goalId:
-                                                          'selectedSkills', // stable "container" id for skills
-                                                      index:
-                                                          i, // index of this skill within _skillsList
-                                                      done:
-                                                          !isSelected, // true to add/select, false to remove/unselect
-                                                    );
+                                                    final navigator =
+                                                        Navigator.of(context);
 
-                                                    // local UI hint you already had
-                                                    setState(() {
-                                                      _newlySelectedSkills
-                                                          .add(skill);
-                                                    });
+                                                    await userCubit.toggleSkill(
+                                                        skillName: skill);
+
+                                                    _newlySelectedSkills
+                                                        .add(skill);
+
+                                                    final currentState =
+                                                        userCubit.state;
+                                                    if (currentState
+                                                        is UserLoaded) {
+                                                      final user =
+                                                          currentState.user;
+                                                      navigator.push(
+                                                        MaterialPageRoute(
+                                                          builder: (context) =>
+                                                              SkillDetailScreen(
+                                                            user: user,
+                                                            skills: {
+                                                              skill: user.selectedSkills[
+                                                                      skill] ??
+                                                                  0.0
+                                                            },
+                                                          ),
+                                                        ),
+                                                      );
+                                                    }
+                                                    // await userCubit.toggleSkill(
+                                                    //     skillName: skill);
+                                                    // setState(() {
+                                                    //   _newlySelectedSkills
+                                                    //       .add(skill);
+                                                    // });
+
+                                                    // if (!mounted) return;
+
+                                                    // final currentState =
+                                                    //     userCubit.state;
+                                                    // if (currentState
+                                                    //     is UserLoaded) {
+                                                    //   final user =
+                                                    //       currentState.user;
+                                                    //   Navigator.of(context)
+                                                    //       .push(
+                                                    //     MaterialPageRoute(
+                                                    //       builder: (context) =>
+                                                    //           SkillDetailScreen(
+                                                    //         user: user,
+                                                    //         skills: {
+                                                    //           skill: user.selectedSkills[
+                                                    //                   skill] ??
+                                                    //               0.0
+                                                    //         },
+                                                    //       ),
+                                                    //     ),
+                                                    //   );
+                                                    // }
                                                   },
                                                 );
                                               },
@@ -288,6 +336,18 @@ class _OnboardScreenState extends State<OnboardScreen>
                                   )),
                             ),
                           ),
+                          Positioned(
+                            right: -32,
+                            bottom: -80,
+                            child: Opacity(
+                              opacity: _avatarOpacity.value,
+                              child: Image.asset(
+                                'assets/avatar.png',
+                                height: 112,
+                                width: 112,
+                              ),
+                            ),
+                          ),
                         ],
                       ),
                     );
@@ -295,98 +355,74 @@ class _OnboardScreenState extends State<OnboardScreen>
                 ),
               ),
 
-              Positioned(
-                bottom: 24,
-                child: Opacity(
-                  opacity: _buttonOpacity.value,
-                  child: SizedBox(
-                    width: 180,
-                    height: 44,
-                    child: ElevatedButton(
-                      onPressed: () {
-                        final state = userCubit.state;
-                        if (state is UserLoaded) {
-                          final selectedSkills = state.user.selectedSkills;
-                          final user = state.user;
+              // Positioned(
+              //   bottom: 24,
+              //   child: Opacity(
+              //     opacity: _buttonOpacity.value,
+              //     child: SizedBox(
+              //       width: 180,
+              //       height: 44,
+              //       child: ElevatedButton(
+              //         onPressed: () {
+              //           final state = userCubit.state;
+              //           if (state is UserLoaded) {
+              //             final selectedSkills = state.user.selectedSkills;
+              //             final user = state.user;
 
-                          if (_newlySelectedSkills.isEmpty) {
-                            ScaffoldMessenger.of(context).showSnackBar(
-                              SnackBar(
-                                content: Text(
-                                  context.l10n.pleaseSelectSkill,
-                                  style: TextStyle(
-                                    fontFamily: 'Montserrat',
-                                    fontSize: 16,
-                                    color: Colors.white,
-                                  ),
-                                ),
-                              ),
-                            );
-                            return;
-                          }
+              //             if (_newlySelectedSkills.isEmpty) {
+              //               ScaffoldMessenger.of(context).showSnackBar(
+              //                 SnackBar(
+              //                   content: Text(
+              //                     context.l10n.pleaseSelectSkill,
+              //                     style: TextStyle(
+              //                       fontFamily: 'Montserrat',
+              //                       fontSize: 16,
+              //                       color: Colors.white,
+              //                     ),
+              //                   ),
+              //                 ),
+              //               );
+              //               return;
+              //             }
 
-                          final Map<String, double> skillsToSend =
-                              Map.fromEntries(
-                            user.selectedSkills.entries.where(
-                              (entry) =>
-                                  _newlySelectedSkills.contains(entry.key),
-                            ),
-                          );
+              //             final Map<String, double> skillsToSend =
+              //                 Map.fromEntries(
+              //               user.selectedSkills.entries.where(
+              //                 (entry) =>
+              //                     _newlySelectedSkills.contains(entry.key),
+              //               ),
+              //             );
 
-                          Navigator.of(context).push(
-                            MaterialPageRoute(
-                              builder: (context) => SkillDetailScreen(
-                                user: user,
-                                skills: skillsToSend,
-                              ),
-                            ),
-                          );
-                        }
-                      },
-
-                      // onPressed: () {
-                      //   final state = userCubit.state;
-                      //   if (state is UserLoaded) {
-                      //     final selectedSkills = state.user.selectedSkills;
-                      //     final user = state.user;
-                      //     if (selectedSkills.isEmpty) {
-                      //       ScaffoldMessenger.of(context).showSnackBar(
-                      //         const SnackBar(
-                      //             content:
-                      //                 Text("Please select at least one skill")),
-                      //       );
-                      //       return;
-                      //     }
-                      //     Navigator.of(context).push(
-                      //       MaterialPageRoute(
-                      //         builder: (context) => SkillDetailScreen(
-                      //           user: user,
-                      //           skills: user.selectedSkills,
-                      //         ),
-                      //       ),
-                      //     );
-                      //   }
-                      // },
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: Colors.blue,
-                        foregroundColor: Colors.white,
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(22),
-                        ),
-                        elevation: 0,
-                      ),
-                      child: const Text(
-                        'Continue',
-                        style: TextStyle(
-                          fontFamily: 'Montserrat',
-                          fontSize: 16,
-                          fontWeight: FontWeight.w700,
-                        ),
-                      ),
-                    ),
-                  ),
-                ),
-              ),
+              //             Navigator.of(context).push(
+              //               MaterialPageRoute(
+              //                 builder: (context) => SkillDetailScreen(
+              //                   user: user,
+              //                   skills: skillsToSend,
+              //                 ),
+              //               ),
+              //             );
+              //           }
+              //         },
+              //         style: ElevatedButton.styleFrom(
+              //           backgroundColor: Colors.blue,
+              //           foregroundColor: Colors.white,
+              //           shape: RoundedRectangleBorder(
+              //             borderRadius: BorderRadius.circular(22),
+              //           ),
+              //           elevation: 0,
+              //         ),
+              //         child: Text(
+              //           l10n.continueForward,
+              //           style: TextStyle(
+              //             fontFamily: 'Montserrat',
+              //             fontSize: 16,
+              //             fontWeight: FontWeight.w700,
+              //           ),
+              //         ),
+              //       ),
+              //     ),
+              //   ),
+              // ),
             ],
           );
         },
@@ -417,37 +453,17 @@ const List<String> _skillsList = [
   "Persuasion",
   "Self-Motivation",
 ];
-// const List<String> _skillsList = [
-//   "communication",
-//   "leadership",
-//   "teamwork",
-//   "problemSolving",
-//   "timeManagement",
-//   "adaptability",
-//   "emotionalIntelligence",
-//   "conflictResolution",
-//   "creativity",
-//   "decisionMaking",
-//   "criticalThinking",
-//   "negotiation",
-//   "activeListening",
-//   "workEthic",
-//   "interpersonalSkills",
-//   "stressManagement",
-//   "networking",
-//   "coachingMentoring",
-//   "persuasion",
-//   "selfMotivation",
-// ];
 
 class _SoftSkillTile extends StatelessWidget {
   final String text;
+  final String skillKey;
   final bool isSelected;
   final bool isDisabled;
   final VoidCallback onTap;
 
   const _SoftSkillTile({
     required this.text,
+    required this.skillKey,
     required this.isSelected,
     this.isDisabled = false,
     required this.onTap,
@@ -455,38 +471,80 @@ class _SoftSkillTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final bgColor = isDisabled
-        ? Colors.grey.shade300
-        : (isSelected ? Colors.blue : Colors.white);
-    final textColor =
-        isDisabled ? Colors.grey : (isSelected ? Colors.white : Colors.blue);
-
     return GestureDetector(
       onTap: isDisabled ? null : onTap,
       child: Container(
         margin: const EdgeInsets.only(bottom: 12),
-        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+        padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
         decoration: BoxDecoration(
-          color: bgColor,
-          borderRadius: BorderRadius.circular(12),
-          boxShadow: [
-            BoxShadow(
-              color: Colors.black.withOpacity(0.05),
-              blurRadius: 4,
-              offset: const Offset(0, 2),
+          color:
+              isSelected ? Colors.white : Colors.white.withValues(alpha: 0.45),
+          borderRadius: BorderRadius.circular(18),
+        ),
+        child: Row(
+          children: [
+            Image.asset(
+              _getSkillIcon(skillKey),
+              width: 28,
+              height: 28,
+            ),
+            const SizedBox(width: 12),
+            Expanded(
+              child: Text(
+                text,
+                style: const TextStyle(
+                  color: Colors.black87,
+                  fontWeight: FontWeight.w600,
+                  fontSize: 16,
+                  fontFamily: 'Montserrat',
+                ),
+              ),
+            ),
+            Container(
+              width: 22,
+              height: 22,
+              decoration: BoxDecoration(
+                shape: BoxShape.circle,
+                color:
+                    isSelected ? const Color(0xFF0055CC) : Colors.transparent,
+                border: Border.all(
+                  color: isSelected ? const Color(0xFF0055CC) : Colors.white,
+                  width: 2,
+                ),
+              ),
+              child: isSelected
+                  ? const Icon(Icons.check, size: 14, color: Colors.white)
+                  : null,
             ),
           ],
-        ),
-        child: Text(
-          text,
-          style: TextStyle(
-            color: textColor,
-            fontWeight: FontWeight.w600,
-            fontSize: 16,
-            fontFamily: 'Montserrat',
-          ),
         ),
       ),
     );
   }
+}
+
+String _getSkillIcon(String skillKey) {
+  final map = {
+    'Communication': 'assets/communication2.png',
+    'Leadership': 'assets/leader.png',
+    'Teamwork': 'assets/team.png',
+    'Problem-Solving': 'assets/solve.png',
+    'Time Management': 'assets/time.png',
+    'Adaptability': 'assets/skill_adaptability.png',
+    'Emotional Intelligence': 'assets/skill_emotional_intelligence.png',
+    'Conflict Resolution': 'assets/conflict.png',
+    'Creativity': 'assets/creativity.png',
+    'Decision Making': 'assets/skill_decision_making.png',
+    'Critical Thinking': 'assets/skill_critical_thinking.png',
+    'Negotiation': 'assets/negotation.png',
+    'Active Listening': 'assets/active.png',
+    'Work Ethic': 'assets/skill_work_ethic.png',
+    'Interpersonal Skills': 'assets/inter.png',
+    'Stress Management': 'assets/stress.png',
+    'Networking': 'assets/networking.png',
+    'Coaching & Mentoring': 'assets/mentoring.png',
+    'Persuasion': 'assets/persuasion.png',
+    'Self-Motivation': 'assets/skill_self_motivation.png',
+  };
+  return map[skillKey] ?? 'assets/skill_default.png';
 }

@@ -96,27 +96,18 @@ class UserCubit extends Cubit<UserState> {
   }
 
   Future<void> toggleSkill({
-    required String goalId,
-    int? index,
-    bool? done,
+    required String skillName,
   }) async {
     if (state is! UserLoaded) return;
 
     try {
-      final uid = firebaseService.currentUser?.uid;
-      if (uid == null) throw Exception("User not logged in.");
-
-      await firebaseService.updateGoalSubtask(
-        uid: uid,
-        goalId: goalId,
-        index: index!,
-        done: done!,
-      );
+      // ✅ Call the correct FirebaseService method for skills
+      await firebaseService.toggleSkill(skillName);
 
       // Refresh user data so UI updates
       await loadUser();
     } catch (e) {
-      emit(UserError("Failed to toggle subtask: $e"));
+      emit(UserError("Failed to toggle skill: $e"));
     }
   }
 
@@ -160,8 +151,16 @@ class UserCubit extends Cubit<UserState> {
     return await firebaseService.getGoals();
   }
 
-  Future<void> completeGoal(Goal goal) async {
-    await firebaseService.completeGoal(goal);
-    await loadUser(); // refresh local state
-  }
+  // Future<void> toggleSubtask({
+  //   required Goal goal,
+  //   required int index,
+  //   required bool done,
+  // }) async {
+  //   await FirebaseService().updateGoalSubtask(
+  //     goalId: goal.id,
+  //     index: index,
+  //     done: done,
+  //   );
+  //   await loadUser(); // refresh local state
+  // }
 }

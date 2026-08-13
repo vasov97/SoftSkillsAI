@@ -2,7 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:get_it/get_it.dart';
 import 'package:softai/cubit/auth_cubit.dart';
-import 'package:softai/screens/profile_screen.dart';
+import 'package:softai/fcm_service.dart';
+import 'package:softai/screens/main_screen.dart';
 import 'package:softai/screens/start_screen.dart';
 
 class AuthGate extends StatefulWidget {
@@ -14,6 +15,7 @@ class AuthGate extends StatefulWidget {
 
 class _AuthGateState extends State<AuthGate> {
   late final AuthCubit authCubit;
+  String? _lastAuthenticatedUid; // Track last authenticated user
 
   @override
   void initState() {
@@ -34,9 +36,18 @@ class _AuthGateState extends State<AuthGate> {
         }
 
         if (state is AuthAuthenticated) {
-          return ProfileScreen(user: state.user);
+          if (_lastAuthenticatedUid != state.user.uid) {
+            _lastAuthenticatedUid = state.user.uid;
+            FCMService.setupForUser(state.user.uid);
+          }
+          return MainScreen(user: state.user);
         }
 
+        // Handles both AuthUnauthenticated AND AuthError
+        if (_lastAuthenticatedUid != null) {
+          FCMService.cleanup(_lastAuthenticatedUid!);
+          _lastAuthenticatedUid = null;
+        }
         return const StartScreen();
       },
     );

@@ -1,4 +1,4 @@
-final List<String> motivationalTexts = [
+const List<String> motivationalTextsEn = [
   "Small steps build big confidence.",
   "Speak up, even if your voice shakes.",
   "Consistency beats motivation.",
@@ -25,13 +25,46 @@ final List<String> motivationalTexts = [
   "A smile is your strongest opener.",
   "Listen to understand, not to reply.",
   "Habits build mastery.",
-  "It’s okay to be a beginner.",
+  "It's okay to be a beginner.",
   "Take action, fear will follow.",
   "Skills grow with attention and time.",
   "Your future self will thank you.",
 ];
 
-String getRandomMotivation() {
-  motivationalTexts.shuffle();
-  return motivationalTexts.first;
+const List<String> motivationalTextsSr = [
+  "Mali koraci grade veliko samopouzdanje.",
+  "Progovori, čak i kad ti glas drhti.",
+  "Doslednost pobeđuje motivaciju.",
+  "Hrabrost počinje jednim malim korakom.",
+  "Rast počinje izvan zone komfora.",
+  "Napredak, ne savršenstvo.",
+  "Slušaj više, govori pametnije.",
+  "Samopouzdanje je veština, ne dar.",
+  "Tvoj trud se uvećava kao kamata.",
+  "Svaki razgovor je prilika za rast.",
+  "Budi radoznao, ne osuđuj.",
+  "Mali razgovori grade velike mostove.",
+  "Empatija je tvoja skrivena supermoć.",
+  "Napravi prvi korak, ostalo će doći.",
+  "Tvoje reči mogu da otvore vrata.",
+  "Izazovi su samo veštine u prerušenju.",
+  "Jedna veština u isto vreme.",
+  "Pogreši napred i uči brže.",
+  "Meke veštine stvaraju čvrste rezultate.",
+  "Tvoj rast inspiriše druge.",
+  "Vežbanje gradi samopouzdanje.",
+  "Budi dovoljno hrabar da započneš razgovor.",
+  "Možeš da naučiš nešto iz svake interakcije.",
+  "Osmeh je tvoj najjači uvod.",
+  "Slušaj da razumeš, ne da odgovoriš.",
+  "Navike grade majstorstvo.",
+  "U redu je biti početnik.",
+  "Preduzmi akciju, strah će se povući.",
+  "Veštine rastu s pažnjom i vremenom.",
+  "Tvoje buduće ja će ti zahvaliti.",
+];
+
+String getRandomMotivation({bool isEnglish = true}) {
+  final list = isEnglish ? motivationalTextsEn : motivationalTextsSr;
+  return (list.toList()..shuffle()).first;
 }

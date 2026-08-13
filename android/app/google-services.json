@@ -12,7 +12,20 @@
           "package_name": "com.example.softai"
         }
       },
-      "oauth_client": [],
+      "oauth_client": [
+        {
+          "client_id": "814989747921-09lvr20d44p3b0mfckunvsjd59srfanb.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.softai",
+            "certificate_hash": "37b2d2df9a6ffc7376fa715df25a0854f3a2dd9e"
+          }
+        },
+        {
+          "client_id": "814989747921-0lqdndpf67r23sipijj0jji1e16uasj1.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
       "api_key": [
         {
           "current_key": "AIzaSyCnKZ-k_OnV20EBuFVK7GBO-NWl6toDjQs"
@@ -20,7 +33,55 @@
       ],
       "services": {
         "appinvite_service": {
-          "other_platform_oauth_client": []
+          "other_platform_oauth_client": [
+            {
+              "client_id": "814989747921-0lqdndpf67r23sipijj0jji1e16uasj1.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "814989747921-5gsceoi5suasgppe5cpevfsbeoead475.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.example.softai"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:814989747921:android:a1eafa8ab3fc882a4747f0",
+        "android_client_info": {
+          "package_name": "com.skillena.softai"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "814989747921-0lqdndpf67r23sipijj0jji1e16uasj1.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCnKZ-k_OnV20EBuFVK7GBO-NWl6toDjQs"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "814989747921-0lqdndpf67r23sipijj0jji1e16uasj1.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "814989747921-5gsceoi5suasgppe5cpevfsbeoead475.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.example.softai"
+              }
+            }
+          ]
         }
       }
     }

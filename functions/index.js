@@ -1,13 +1,19 @@
-const functions = require("firebase-functions");
-const admin = require("firebase-admin");
+// functions/index.js
+const admin = require('./admin');
+const { onCall } = require('firebase-functions/v2/https');
 
-admin.initializeApp();
+
+
 const db = admin.firestore();
 const auth = admin.auth();
 
-// Signup User
-exports.signup = functions.https.onCall(async (data, context) => {
-  const { fullName, email, password } = data;
+// ⬅️ add this line so your scheduler export is visible
+Object.assign(exports, require('./remainders'));
+
+// v2 onCall: signup
+exports.signup = onCall({ region: 'us-central1' }, async (request) => {
+  const { fullName, email, password } = request.data || {};
+  if (!fullName || !email || !password) throw new Error('fullName, email, password are required');
 
   const userRecord = await auth.createUser({ email, password });
   const uid = userRecord.uid;
@@ -28,30 +34,23 @@ exports.signup = functions.https.onCall(async (data, context) => {
     completedGoals: 0,
   };
 
-  await db.collection("users").doc(uid).set(user);
+  await db.collection('users').doc(uid).set(user);
   return { success: true, user };
 });
 
-// Get User
-exports.getUserData = functions.https.onCall(async (data, context) => {
-  const uid = context.auth?.uid;
-  if (!uid) {
-    throw new functions.https.HttpsError("unauthenticated", "Not logged in");
-  }
-
-  const doc = await db.collection("users").doc(uid).get();
-  if (!doc.exists) {
-    throw new functions.https.HttpsError("not-found", "User not found");
-  }
-
+// v2 onCall: getUserData
+exports.getUserData = onCall({ region: 'us-central1' }, async (request) => {
+  const uid = request.auth?.uid;
+  if (!uid) throw new Error('unauthenticated');
+  const doc = await db.collection('users').doc(uid).get();
+  if (!doc.exists) throw new Error('not-found');
   return doc.data();
 });
 
-// Reset Password
-exports.sendPasswordReset = functions.https.onCall(async (data, context) => {
-  const { email } = data;
-  // Normally handled in Flutter with FirebaseAuth
-  // If using custom email logic, generate the link here:
+// v2 onCall: sendPasswordReset
+exports.sendPasswordReset = onCall({ region: 'us-central1' }, async (request) => {
+  const { email } = request.data || {};
+  if (!email) throw new Error('email required');
   const link = await auth.generatePasswordResetLink(email);
   return { success: true, link };
 });

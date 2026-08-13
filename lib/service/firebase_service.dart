@@ -1,13 +1,58 @@
+import 'dart:async';
+import 'dart:io';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
+import 'package:flutter/foundation.dart';
+import 'package:google_sign_in/google_sign_in.dart';
 import 'package:softai/model/goal.dart';
 import 'package:softai/model/user.dart';
 
 class FirebaseService {
   final FirebaseAuth _auth = FirebaseAuth.instance;
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
+  final GoogleSignIn _googleSignIn = GoogleSignIn();
 
-  /// Sign Up
+  StreamSubscription<String>? _tokenRefreshSub;
+
+  Future<void> saveTokenForUid(String uid) async {
+    final t = await FirebaseMessaging.instance.getToken();
+    if (t == null) return;
+    await FirebaseFirestore.instance
+        .collection('users')
+        .doc(uid)
+        .collection('deviceTokens')
+        .doc(t)
+        .set({
+      'token': t, // <-- your Cloud Function expects this exact key
+      'platform': Platform.isAndroid ? 'android' : 'ios',
+      'updatedAt': FieldValue.serverTimestamp(),
+    }, SetOptions(merge: true));
+  }
+
+  void startTokenRefreshListener(String uid) {
+    _tokenRefreshSub?.cancel();
+    _tokenRefreshSub = FirebaseMessaging.instance.onTokenRefresh.listen((t) {
+      FirebaseFirestore.instance
+          .collection('users')
+          .doc(uid)
+          .collection('deviceTokens')
+          .doc(t)
+          .set({
+        'token': t,
+        'platform': Platform.isAndroid ? 'android' : 'ios',
+        'updatedAt': FieldValue.serverTimestamp(),
+      }, SetOptions(merge: true));
+    });
+  }
+
+// (Optional) call this if you ever want to stop listening on sign-out:
+  void stopTokenRefreshListener() {
+    _tokenRefreshSub?.cancel();
+    _tokenRefreshSub = null;
+  }
+
   Future<UserModel?> signUp({
     required String fullName,
     required String email,
@@ -33,6 +78,97 @@ class FirebaseService {
     return null;
   }
 
+  Future<UserModel?> signInWithGoogle() async {
+    try {
+      // Trigger the authentication flow
+      final GoogleSignInAccount? googleUser = await _googleSignIn.signIn();
+
+      if (googleUser == null) {
+        // User canceled the sign-in
+        return null;
+      }
+
+      // Obtain the auth details from the request
+      final GoogleSignInAuthentication googleAuth =
+          await googleUser.authentication;
+
+      // Create a new credential
+      final credential = GoogleAuthProvider.credential(
+        accessToken: googleAuth.accessToken,
+        idToken: googleAuth.idToken,
+      );
+
+      // Sign in to Firebase with the Google credential
+      final UserCredential userCredential =
+          await _auth.signInWithCredential(credential);
+
+      final firebaseUser = userCredential.user;
+      if (firebaseUser == null) return null;
+
+      // Check if user document exists in Firestore
+      final userDoc =
+          await _firestore.collection('users').doc(firebaseUser.uid).get();
+
+      if (!userDoc.exists) {
+        // ✅ New user - create document same as regular signup
+        UserModel user = UserModel(
+          uid: firebaseUser.uid,
+          fullName: firebaseUser.displayName ?? 'User',
+          email: firebaseUser.email ?? '',
+          createdAt: DateTime.now(),
+          lastActive: DateTime.now(),
+        );
+
+        await _firestore.collection('users').doc(user.uid).set(user.toMap());
+
+        // ✅ Save FCM token
+        final fcmToken = await FirebaseMessaging.instance.getToken();
+        if (fcmToken != null) {
+          await _firestore
+              .collection('users')
+              .doc(user.uid)
+              .collection('deviceTokens')
+              .doc(fcmToken)
+              .set({
+            'token': fcmToken,
+            'fcmToken': fcmToken,
+            'platform': Platform.isAndroid ? 'android' : 'ios',
+            'createdAt': FieldValue.serverTimestamp(),
+            'updatedAt': FieldValue.serverTimestamp(),
+          });
+        }
+
+        return user;
+      } else {
+        // ✅ Existing user - update last active and FCM token
+        await _firestore.collection('users').doc(firebaseUser.uid).update({
+          'lastActive': DateTime.now(),
+        });
+
+        // Save/update FCM token
+        final fcmToken = await FirebaseMessaging.instance.getToken();
+        if (fcmToken != null) {
+          await _firestore
+              .collection('users')
+              .doc(firebaseUser.uid)
+              .collection('deviceTokens')
+              .doc(fcmToken)
+              .set({
+            'token': fcmToken,
+            'fcmToken': fcmToken,
+            'platform': Platform.isAndroid ? 'android' : 'ios',
+            'updatedAt': FieldValue.serverTimestamp(),
+          }, SetOptions(merge: true));
+        }
+
+        return UserModel.fromMap(userDoc.data()!);
+      }
+    } catch (e) {
+      debugPrint('Google Sign-In Error: $e');
+      throw Exception('Google Sign-In failed: $e');
+    }
+  }
+
   Future<void> updateGoalSubtask({
     required String uid,
     required String goalId,
@@ -45,45 +181,118 @@ class FirebaseService {
         .collection('goals')
         .doc(goalId);
 
-    final snap = await docRef.get();
-    if (!snap.exists) {
-      throw Exception("Goal not found");
-    }
+    await FirebaseFirestore.instance.runTransaction((tx) async {
+      final snap = await tx.get(docRef);
+      if (!snap.exists) {
+        throw Exception("Goal not found");
+      }
 
-    final data = snap.data() as Map<String, dynamic>;
+      final data = snap.data() as Map<String, dynamic>;
 
-    // Load current subtasksDone; ensure it has length 5 (or at least index+1)
-    final List<bool> subtasksDone = List<bool>.from(
-      (data['subtasksDone'] as List?)?.map((e) {
-            if (e is bool) return e;
-            if (e is num) return e != 0;
-            if (e is String) return e.toLowerCase() == 'true';
-            return false;
-          }) ??
-          const [],
-    );
+      // Get the skill name from the goal
+      final String skillName = data['skill'] as String? ?? '';
+      if (skillName.isEmpty) {
+        throw Exception("Goal has no skill associated");
+      }
 
-    // Normalize length to at least 5 (or index+1)
-    final targetLen = (index + 1) < 5 ? 5 : (index + 1);
-    while (subtasksDone.length < targetLen) {
-      subtasksDone.add(false);
-    }
+      // 1) Use 'subtasks' as the authoritative length
+      final List<dynamic> subtasks =
+          (data['subtasks'] as List<dynamic>?) ?? const [];
+      final int intendedLen = subtasks.length;
 
-    // Set the new value
-    subtasksDone[index] = done;
+      // 2) Normalize 'subtasksDone' -> List<bool> and align lengths
+      final List<dynamic> rawDone =
+          (data['subtasksDone'] as List<dynamic>?) ?? const [];
+      final List<bool> subtasksDone = List<bool>.generate(
+        intendedLen,
+        (i) => i < rawDone.length
+            ? (rawDone[i] is bool
+                ? rawDone[i] as bool
+                : rawDone[i] is num
+                    ? (rawDone[i] as num) != 0
+                    : rawDone[i] is String
+                        ? (rawDone[i] as String).toLowerCase() == 'true'
+                        : false)
+            : false,
+        growable: false,
+      );
 
-    // Optional: if you want to auto-complete a goal when all subtasks are done,
-    // compute isActive = !allDone (or however you use isActive).
-    final allDone = subtasksDone.isNotEmpty && subtasksDone.every((v) => v);
-    final bool newIsActive =
-        data['isActive'] is bool ? data['isActive'] as bool : true;
-    // Example policy: when all 5 checked, set isActive=false
-    final bool isActiveFinal = allDone ? false : newIsActive;
+      // 3) Normalize 'subtaskNotified' -> List<bool> and align lengths
+      final List<dynamic> rawNotified =
+          (data['subtaskNotified'] as List<dynamic>?) ?? const [];
+      final List<bool> subtaskNotified = List<bool>.generate(
+        intendedLen,
+        (i) => i < rawNotified.length
+            ? (rawNotified[i] is bool ? rawNotified[i] as bool : false)
+            : false,
+        growable: false,
+      );
 
-    await docRef.update({
-      'subtasksDone': subtasksDone,
-      'isActive':
-          isActiveFinal, // remove this line if you don't want auto-complete
+      // 4) Bounds check (keep UI/model contract strict)
+      if (index < 0 || index >= intendedLen) {
+        throw Exception('Index $index out of range (len=$intendedLen)');
+      }
+
+      // 5) If no change, skip write (avoids redundant CF triggers & churn)
+      if (subtasksDone[index] == done) {
+        debugPrint('⏭️ Subtask $index already $done, skipping update');
+        return;
+      }
+
+      // 6) Apply toggle
+      subtasksDone[index] = done;
+
+      // 7) CRITICAL: If unchecking, reset the notified flag
+      //    This allows re-notification when checked again
+      if (!done) {
+        subtaskNotified[index] = false;
+        debugPrint('🔄 Unchecking subtask $index - reset notified flag');
+      }
+
+      // 8) Preserve isActive as-is (don't auto-complete here)
+      final bool currentIsActive =
+          (data['isActive'] is bool) ? data['isActive'] as bool : true;
+
+      debugPrint(
+          '📝 Updating subtask $index: done=$done, notified=${subtaskNotified[index]}');
+
+      // 9) Atomic write to goal document
+      tx.set(
+        docRef,
+        <String, dynamic>{
+          'subtasksDone': subtasksDone,
+          'subtaskNotified': subtaskNotified,
+          'isActive': currentIsActive,
+          'lastProgressAt': FieldValue.serverTimestamp(),
+          'lastSubtaskToggledAt': FieldValue.serverTimestamp(),
+          'lastNotifiedAt': FieldValue.delete(),
+          'userId': uid,
+        },
+        SetOptions(merge: true),
+      );
+
+      // 10) ✅ UPDATE SKILL PROGRESS in user document
+      final userRef = FirebaseFirestore.instance.collection('users').doc(uid);
+      final progressDelta =
+          done ? 0.004 : -0.004; // 5 subtasks × 0.004 = 0.02 per goal
+
+      tx.set(
+        userRef,
+        {
+          'selectedSkills': {
+            skillName: FieldValue.increment(progressDelta),
+          },
+        },
+        SetOptions(merge: true),
+      );
+
+      debugPrint('✅ Subtask update transaction complete');
+      debugPrint('📊 Updated skill "$skillName" by $progressDelta');
+
+      if (done) {
+        debugPrint(
+            '⏰ Notification should arrive at: ${DateTime.now().add(const Duration(minutes: 2))}');
+      }
     });
   }
 
@@ -92,7 +301,6 @@ class FirebaseService {
     required String email,
     required String password,
   }) async {
-    // Input checks
     if (email.isEmpty || password.isEmpty) {
       throw Exception("Email and password cannot be empty.");
     }
@@ -101,7 +309,6 @@ class FirebaseService {
       throw Exception("Password must be at least 6 characters long.");
     }
 
-    // Firebase login
     try {
       UserCredential userCredential = await _auth.signInWithEmailAndPassword(
         email: email,
@@ -113,9 +320,22 @@ class FirebaseService {
         throw Exception("User not found.");
       }
 
+      // ✅ Save FCM token to subcollection
+      final fcmToken = await FirebaseMessaging.instance.getToken();
+      if (fcmToken != null) {
+        await _firestore
+            .collection('users')
+            .doc(user.uid)
+            .collection('deviceTokens')
+            .doc(fcmToken)
+            .set({
+          'token': fcmToken,
+          'createdAt': FieldValue.serverTimestamp(),
+        });
+      }
+
       return await getUser();
     } on FirebaseAuthException catch (e) {
-      // Handle FirebaseAuth specific errors
       if (e.code == 'user-not-found') {
         throw Exception("No user found with this email.");
       } else if (e.code == 'wrong-password') {
@@ -135,15 +355,6 @@ class FirebaseService {
     await _auth.sendPasswordResetEmail(email: email);
   }
 
-  /// Get User
-  // Future<UserModel?> getUser() async {
-  //   DocumentSnapshot doc =
-  //       await _firestore.collection('users').doc(currentUser!.uid).get();
-  //   if (doc.exists) {
-  //     return UserModel.fromMap(doc.data() as Map<String, dynamic>);
-  //   }
-  //   return null;
-  // }
   Future<UserModel?> getUser() async {
     final user = currentUser;
     if (user == null) {
@@ -165,6 +376,12 @@ class FirebaseService {
     }
   }
 
+  /// Sign Out
+  Future<void> signOut() async {
+    await _googleSignIn.signOut();
+    await _auth.signOut();
+  }
+
   /// Update User Progress
   Future<void> updateUserProgress(
     String uid, {
@@ -183,11 +400,6 @@ class FirebaseService {
       data['aiInteractionsUsed'] = aiInteractionsUsed;
 
     await _firestore.collection('users').doc(uid).update(data);
-  }
-
-  /// Sign Out
-  Future<void> signOut() async {
-    await _auth.signOut();
   }
 
   Future<void> toggleSkill(String skill) async {
@@ -217,11 +429,6 @@ class FirebaseService {
     });
   }
 
-  /// =========================
-  /// SOFT SKILL GOALS METHODS
-  /// =========================
-
-  /// Create a goal for a soft skill
   Future<void> createSoftSkillGoal({
     required String skillName,
     required String title,

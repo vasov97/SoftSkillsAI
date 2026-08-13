@@ -1,0 +1,3 @@
+-keep class com.skillena.softai.** { *; }
+-keep class io.flutter.** { *; }
+-keep class io.flutter.embedding.** { *; }

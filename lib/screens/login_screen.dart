@@ -65,9 +65,12 @@ class _LoginScreenState extends State<LoginScreen> {
                     begin: Alignment.topCenter,
                     end: Alignment.bottomCenter,
                     colors: [
-                      Color(0xFF007BFF),
-                      Color(0xFF00FFD5),
+                      Color(0xFF006FFF),
+                      Color(0xFF00AAF2),
+                      Color(0xFF00E5E5),
+                      Color(0xFF0BFF96),
                     ],
+                    stops: [0.0, 0.24, 0.49, 1.0],
                   ),
                 ),
               ),
@@ -83,10 +86,6 @@ class _LoginScreenState extends State<LoginScreen> {
                           SizedBox(
                             height: 40,
                           ),
-                          Image.asset(
-                            'assets/avatar.png',
-                            scale: 6.4,
-                          ),
                           Row(
                             mainAxisAlignment: MainAxisAlignment.center,
                             children: [
@@ -99,14 +98,49 @@ class _LoginScreenState extends State<LoginScreen> {
                                   fontWeight: FontWeight.w800,
                                 ),
                               ),
-                              Padding(
-                                padding: const EdgeInsets.only(bottom: 16.0),
-                                child: Image.asset(
-                                  'assets/ai.png',
-                                  scale: 1.2,
+                              Container(
+                                // margin: const EdgeInsets.only(bottom: 16),
+                                padding: const EdgeInsets.symmetric(
+                                    horizontal: 22, vertical: 4),
+                                decoration: BoxDecoration(
+                                  color: Color.fromARGB(255, 84, 204, 204),
+                                  borderRadius: BorderRadius.circular(10),
+                                ),
+                                child: const Text(
+                                  'AI',
+                                  style: TextStyle(
+                                    fontFamily: 'Montserrat',
+                                    color: Colors.white,
+                                    fontSize: 24,
+                                    fontWeight: FontWeight.w800,
+                                  ),
                                 ),
                               ),
                             ],
+                          ),
+                          Image.asset(
+                            'assets/avatar.png',
+                            scale: 6.4,
+                          ),
+                          const SizedBox(height: 8),
+                          Text(
+                            l10n.hello,
+                            style: TextStyle(
+                              fontFamily: 'Montserrat',
+                              color: Colors.white,
+                              fontSize: 28,
+                              fontWeight: FontWeight.w700,
+                            ),
+                          ),
+                          const SizedBox(height: 4),
+                          Text(
+                            l10n.pleaseLoginToContinue,
+                            style: TextStyle(
+                              fontFamily: 'Montserrat',
+                              color: Colors.white.withValues(alpha: 0.7),
+                              fontSize: 16,
+                            ),
+                            textAlign: TextAlign.center,
                           ),
                         ],
                       ),
@@ -119,15 +153,21 @@ class _LoginScreenState extends State<LoginScreen> {
                               controller: emailController,
                               keyboardType: TextInputType.emailAddress,
                               style: const TextStyle(
-                                  fontSize: 16, color: Colors.white),
-                              decoration: const InputDecoration(
-                                labelText: 'Email',
-                                labelStyle: TextStyle(color: Colors.white70),
-                                enabledBorder: UnderlineInputBorder(
-                                  borderSide: BorderSide(color: Colors.white),
+                                  fontSize: 16, color: Color(0xFF0055CC)),
+                              decoration: InputDecoration(
+                                hintText: 'Email',
+                                hintStyle: TextStyle(
+                                  color: const Color(0xFF0055CC)
+                                      .withValues(alpha: 0.5),
+                                  fontFamily: 'Montserrat',
                                 ),
-                                focusedBorder: UnderlineInputBorder(
-                                  borderSide: BorderSide(color: Colors.white),
+                                filled: true,
+                                fillColor: Colors.white,
+                                contentPadding: const EdgeInsets.symmetric(
+                                    horizontal: 20, vertical: 14),
+                                border: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(30),
+                                  borderSide: BorderSide.none,
                                 ),
                               ),
                             ),
@@ -136,23 +176,29 @@ class _LoginScreenState extends State<LoginScreen> {
                               controller: passwordController,
                               obscureText: _obscurePassword,
                               style: const TextStyle(
-                                  fontSize: 16, color: Colors.white),
+                                  fontSize: 16, color: Color(0xFF0055CC)),
                               decoration: InputDecoration(
-                                labelText: l10n.password,
-                                labelStyle:
-                                    const TextStyle(color: Colors.white70),
-                                enabledBorder: const UnderlineInputBorder(
-                                  borderSide: BorderSide(color: Colors.white),
+                                hintText: l10n.password,
+                                hintStyle: TextStyle(
+                                  color: const Color(0xFF0055CC)
+                                      .withValues(alpha: 0.5),
+                                  fontFamily: 'Montserrat',
                                 ),
-                                focusedBorder: const UnderlineInputBorder(
-                                  borderSide: BorderSide(color: Colors.white),
+                                filled: true,
+                                fillColor: Colors.white,
+                                contentPadding: const EdgeInsets.symmetric(
+                                    horizontal: 20, vertical: 14),
+                                border: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(30),
+                                  borderSide: BorderSide.none,
                                 ),
                                 suffixIcon: IconButton(
                                   icon: Icon(
                                     _obscurePassword
                                         ? Icons.visibility_off
                                         : Icons.visibility,
-                                    color: Colors.white70,
+                                    color: const Color(0xFF0055CC)
+                                        .withValues(alpha: 0.6),
                                   ),
                                   onPressed: () {
                                     setState(() {
@@ -176,7 +222,8 @@ class _LoginScreenState extends State<LoginScreen> {
                                   child: Text(
                                     l10n.forgotPassword,
                                     style: TextStyle(
-                                      color: Colors.white70,
+                                      color: const Color.fromARGB(
+                                          226, 255, 255, 255),
                                       fontWeight: FontWeight.w800,
                                       fontFamily: 'Montserrat',
                                     ),
@@ -186,7 +233,7 @@ class _LoginScreenState extends State<LoginScreen> {
                             ),
                             const SizedBox(height: 32),
                             SizedBox(
-                              width: 180,
+                              width: MediaQuery.of(context).size.width * 0.82,
                               height: 44,
                               child: ElevatedButton(
                                 onPressed: () {
@@ -196,18 +243,16 @@ class _LoginScreenState extends State<LoginScreen> {
                                   );
                                 },
                                 style: ElevatedButton.styleFrom(
-                                  backgroundColor: Colors.transparent,
+                                  backgroundColor: const Color(0xFF0055CC),
                                   foregroundColor: Colors.white,
-                                  side: const BorderSide(
-                                      color: Colors.white, width: 2),
                                   shape: RoundedRectangleBorder(
                                     borderRadius: BorderRadius.circular(22),
                                   ),
-                                  elevation: 0, // bez senke
+                                  elevation: 0,
                                 ),
                                 child: Text(
                                   l10n.login,
-                                  style: TextStyle(
+                                  style: const TextStyle(
                                     fontFamily: 'Montserrat',
                                     fontSize: 16,
                                     fontWeight: FontWeight.w900,
@@ -258,24 +303,19 @@ class _LoginScreenState extends State<LoginScreen> {
                               height: 16,
                             ),
                             SizedBox(
-                              width: 260,
+                              width: MediaQuery.of(context).size.width * 0.82,
                               height: 44,
                               child: ElevatedButton(
                                 onPressed: () {
-                                  authCubit.login(
-                                    emailController.text.trim(),
-                                    passwordController.text.trim(),
-                                  );
+                                  authCubit.signInWithGoogle();
                                 },
                                 style: ElevatedButton.styleFrom(
-                                  backgroundColor: Colors.transparent,
-                                  foregroundColor: Colors.white,
-                                  side: const BorderSide(
-                                      color: Colors.white, width: 2),
+                                  backgroundColor: Colors.white,
+                                  foregroundColor: Colors.black87,
                                   shape: RoundedRectangleBorder(
                                     borderRadius: BorderRadius.circular(22),
                                   ),
-                                  elevation: 0, // bez senke
+                                  elevation: 0,
                                 ),
                                 child: FittedBox(
                                   fit: BoxFit.scaleDown,
@@ -287,15 +327,14 @@ class _LoginScreenState extends State<LoginScreen> {
                                         height: 18,
                                         width: 18,
                                       ),
-                                      SizedBox(
-                                        width: 8,
-                                      ),
+                                      const SizedBox(width: 8),
                                       Text(
                                         l10n.continueGoogle,
-                                        style: TextStyle(
+                                        style: const TextStyle(
                                           fontFamily: 'Montserrat',
                                           fontSize: 16,
-                                          fontWeight: FontWeight.w900,
+                                          fontWeight: FontWeight.w700,
+                                          color: Colors.black87,
                                         ),
                                       ),
                                     ],
@@ -305,7 +344,7 @@ class _LoginScreenState extends State<LoginScreen> {
                             ),
                             const SizedBox(height: 12),
                             SizedBox(
-                              width: 260,
+                              width: MediaQuery.of(context).size.width * 0.82,
                               height: 44,
                               child: ElevatedButton(
                                 onPressed: () {
@@ -315,14 +354,12 @@ class _LoginScreenState extends State<LoginScreen> {
                                   );
                                 },
                                 style: ElevatedButton.styleFrom(
-                                  backgroundColor: Colors.transparent,
-                                  foregroundColor: Colors.white,
-                                  side: const BorderSide(
-                                      color: Colors.white, width: 2),
+                                  backgroundColor: Colors.white,
+                                  foregroundColor: Colors.black87,
                                   shape: RoundedRectangleBorder(
                                     borderRadius: BorderRadius.circular(22),
                                   ),
-                                  elevation: 0, // bez senke
+                                  elevation: 0,
                                 ),
                                 child: Row(
                                   mainAxisAlignment: MainAxisAlignment.center,
@@ -332,15 +369,14 @@ class _LoginScreenState extends State<LoginScreen> {
                                       height: 22,
                                       width: 22,
                                     ),
-                                    SizedBox(
-                                      width: 8,
-                                    ),
+                                    const SizedBox(width: 8),
                                     Text(
                                       l10n.continueApple,
-                                      style: TextStyle(
+                                      style: const TextStyle(
                                         fontFamily: 'Montserrat',
                                         fontSize: 16,
-                                        fontWeight: FontWeight.w900,
+                                        fontWeight: FontWeight.w700,
+                                        color: Colors.black87,
                                       ),
                                     ),
                                   ],

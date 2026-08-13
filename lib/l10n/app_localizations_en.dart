@@ -12,6 +12,20 @@ class AppLocalizationsEn extends AppLocalizations {
   String get welcome => 'Welcome';
 
   @override
+  String goalAddedMessage(String goalTitle, String skill) {
+    return 'Goal \"$goalTitle\" added under \"$skill\"';
+  }
+
+  @override
+  String get subtitle => 'Build skills that help you grow and succeed!';
+
+  @override
+  String get hello => 'Welcome back!';
+
+  @override
+  String get pleaseLoginToContinue => 'Login to continue your progress.';
+
+  @override
   String get login => 'Log In';
 
   @override
@@ -148,6 +162,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String get nextSkill => 'Next Skill';
 
   @override
+  String get addNewGoal => 'Add New Goal';
+
+  @override
   String get loadingTips => 'Loading personalized tips...';
 
   @override
@@ -155,6 +172,9 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get saveSuccess => 'Saved successfully';
+
+  @override
+  String get save => 'Save lesson';
 
   @override
   String get saveFailed => 'Failed to save lesson';
@@ -167,14 +187,19 @@ class AppLocalizationsEn extends AppLocalizations {
       'No skills tracked yet.\nSelect skills to start tracking progress';
 
   @override
-  String get tagline => 'Build skills that help you grow and succeed';
+  String get tagline => 'Your soft skills AI coach';
+
+  @override
+  String get subtitleStart => 'Chat. Practice. Grow.';
 
   @override
   String get getStarted => 'Get\nStarted';
 
   @override
-  String get helloSkillPrompt =>
-      'Hello! Which soft skill\nwould you like to work on?';
+  String get onboardSubtitle => 'Choose skill or ask your question.';
+
+  @override
+  String get helloSkillPrompt => 'Which soft skill\nwould you like to work on?';
 
   @override
   String get dailyTip => 'Daily Tip';
@@ -187,6 +212,9 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get trainNewSkill => 'Train new skill';
+
+  @override
+  String get buttonStart => 'Start chatting';
 
   @override
   String get trackProgress => 'Track progress';
@@ -217,4 +245,243 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get continueApple => 'Continue with Apple';
+
+  @override
+  String get timeToLearnNewSkill => 'Time to learn new skill!';
+
+  @override
+  String get readyForProgress => 'Ready for progress today?';
+
+  @override
+  String get chatWithSkillena => 'Chat with\nSkillena AI';
+
+  @override
+  String get askAndGetAdvice => 'Ask a question and get personalized advice.';
+
+  @override
+  String get startChat => 'Start chatting';
+
+  @override
+  String get continueLastChat => 'Continue last conversation';
+
+  @override
+  String get lastChatPlaceholder => 'No previous conversation yet.';
+
+  @override
+  String get askAboutSoftSkills => 'Ask about soft skills';
+
+  @override
+  String get saveAnswer => 'Save answer';
+
+  @override
+  String get createGoal => 'Create goal';
+
+  @override
+  String get practiceWithMe => 'Practice with me';
+
+  @override
+  String get continueChat => 'Continue conversation';
+
+  @override
+  String get home => 'Home';
+
+  @override
+  String get saveThisConversation => 'Save this conversation';
+
+  @override
+  String get addTitle => 'Add title';
+
+  @override
+  String get addTitleHint => 'Conversation title...';
+
+  @override
+  String get summaryAutomatic => 'Summary (automatic)';
+
+  @override
+  String get addTo => 'Add to';
+
+  @override
+  String get myLibrary => 'My library';
+
+  @override
+  String get myGoals => 'My goals';
+
+  @override
+  String get reminder => 'Reminder';
+
+  @override
+  String get skip => 'Skip';
+
+  @override
+  String get createNewGoal => 'Create new goal';
+
+  @override
+  String get createGoalSubtitle =>
+      'Set a goal and AI will create steps for you.';
+
+  @override
+  String get goalTitle => 'Goal title';
+
+  @override
+  String get selectSkill => 'Select related skill';
+
+  @override
+  String get aiWillGenerateSubtasks =>
+      'AI will automatically generate 5 actionable subtasks for your goal.';
+
+  @override
+  String get pleaseFillGoalFields => 'Please enter a title and select a skill.';
+
+  @override
+  String get cancel => 'Cancel';
+
+  @override
+  String get addGoalTitle => 'Add goal title';
+
+  @override
+  String get practiceWithSkillena => 'Practice with Skillena AI';
+
+  @override
+  String get chooseScenario => 'Choose a situation you want to practice.';
+
+  @override
+  String get scenarioDifficultConversation =>
+      'Difficult conversation with a colleague';
+
+  @override
+  String get scenarioPresentation => 'Presentation in front of a team';
+
+  @override
+  String get scenarioFeedback => 'Giving feedback';
+
+  @override
+  String get scenarioClientMeeting => 'Meeting with a client';
+
+  @override
+  String get scenarioNegotiation => 'Negotiation';
+
+  @override
+  String get scenarioOther => 'Other situation';
+
+  @override
+  String get describeYourSituation => 'Describe your situation';
+
+  @override
+  String get describeScenarioHint =>
+      'e.g. Asking for a raise from my manager...';
+
+  @override
+  String get startPractice => 'Start practice';
+
+  @override
+  String get yourProgress => 'Your progress';
+
+  @override
+  String get totalProgress => 'Total progress';
+
+  @override
+  String get conversations => 'Conversations';
+
+  @override
+  String get completedExercises => 'Completed exercises';
+
+  @override
+  String get daysInARow => 'Days in a row';
+
+  @override
+  String get activeGoals => 'Active goals';
+
+  @override
+  String get progressBySkills => 'Progress by skills';
+
+  @override
+  String get active => 'Active';
+
+  @override
+  String get completed => 'Completed';
+
+  @override
+  String get progress => 'Progress';
+
+  @override
+  String get steps => 'steps';
+
+  @override
+  String get noGoalsYet =>
+      'No goals yet.\nCreate your first goal to get started!';
+
+  @override
+  String get noSubtasksYet => 'No subtasks yet.';
+
+  @override
+  String get tabConversations => 'Conversations';
+
+  @override
+  String get tabLessons => 'Lessons';
+
+  @override
+  String get tabTechniques => 'Techniques';
+
+  @override
+  String get tagConversation => 'Conversation';
+
+  @override
+  String get tagLesson => 'Lesson';
+
+  @override
+  String get tagTechnique => 'Technique';
+
+  @override
+  String get noConversationsSaved => 'No conversations saved yet.';
+
+  @override
+  String get noTechniquesSaved => 'No techniques saved yet.';
+
+  @override
+  String get removeLesson => 'Remove from library';
+
+  @override
+  String get dailyAdvice => 'Daily advice';
+
+  @override
+  String get applyToday => 'Apply today';
+
+  @override
+  String get applied => 'Applied!';
+
+  @override
+  String get adviceHistory => 'Advice history';
+
+  @override
+  String get noAdviceHistory => 'No previous advice yet.';
+
+  @override
+  String get techniqueOfDay => 'Technique of the day';
+
+  @override
+  String get practiceWithAI => 'Practice with AI';
+
+  @override
+  String get techniqueSteps => 'Technique steps';
+
+  @override
+  String get pleaseAddTitle => 'Please add a title';
+
+  @override
+  String get conversationSaved => 'Conversation saved successfully!';
+
+  @override
+  String get saveTechnique => 'Save technique';
+
+  @override
+  String get techniqueSaved => 'Technique saved!';
+
+  @override
+  String get pleaseSelectOption => 'Please select at least one option';
+
+  @override
+  String get fiveMoreTips => '5 more tips';
+
+  @override
+  String get teachMeMore => 'Teach me more';
 }

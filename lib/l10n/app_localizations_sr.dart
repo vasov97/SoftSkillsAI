@@ -12,6 +12,20 @@ class AppLocalizationsSr extends AppLocalizations {
   String get welcome => 'Dobrodošli';
 
   @override
+  String goalAddedMessage(String goalTitle, String skill) {
+    return 'Cilj \"$goalTitle\" dodat pod \"$skill\"';
+  }
+
+  @override
+  String get subtitle => 'Razvij veštine pomoću kojih ćeš doživeti uspeh!';
+
+  @override
+  String get hello => 'Dobro došao nazad!';
+
+  @override
+  String get pleaseLoginToContinue => 'Prijavi se da nastaviš svoj razvoj.';
+
+  @override
   String get login => 'Prijavi se';
 
   @override
@@ -148,6 +162,9 @@ class AppLocalizationsSr extends AppLocalizations {
   String get nextSkill => 'Sledeća veština';
 
   @override
+  String get addNewGoal => 'Dodaj novi cilj';
+
+  @override
   String get loadingTips => 'Učitavanje personalizovanih saveta...';
 
   @override
@@ -155,6 +172,9 @@ class AppLocalizationsSr extends AppLocalizations {
 
   @override
   String get saveSuccess => 'Uspešno sačuvano';
+
+  @override
+  String get save => 'Sačuvaj lekciju';
 
   @override
   String get saveFailed => 'Neuspešno čuvanje lekcije';
@@ -167,14 +187,19 @@ class AppLocalizationsSr extends AppLocalizations {
       'Još uvek ne pratiš nijednu veštinu.\nIzaberi veštine da bi počeo da pratiš napredak';
 
   @override
-  String get tagline => 'Razvij veštine koje ti pomažu da rasteš i uspeš';
+  String get tagline => 'Tvoj AI trener za meke veštine';
+
+  @override
+  String get subtitleStart => 'Razgovaraj. Vežbaj. Rasti.';
 
   @override
   String get getStarted => 'Počni\nodmah';
 
   @override
-  String get helloSkillPrompt =>
-      'Zdravo! Na kojoj soft veštini\nželiš da radiš?';
+  String get onboardSubtitle => 'Izaberi oblast ili postavi svoje pitanje.';
+
+  @override
+  String get helloSkillPrompt => 'Na kojoj soft veštini\nželiš da radiš?';
 
   @override
   String get dailyTip => 'Dnevni savet';
@@ -187,6 +212,9 @@ class AppLocalizationsSr extends AppLocalizations {
 
   @override
   String get trainNewSkill => 'Vežbaj novu veštinu';
+
+  @override
+  String get buttonStart => 'Počni razgovor';
 
   @override
   String get trackProgress => 'Prati napredak';
@@ -217,4 +245,240 @@ class AppLocalizationsSr extends AppLocalizations {
 
   @override
   String get continueApple => 'Nastavi sa Apple';
+
+  @override
+  String get timeToLearnNewSkill => 'Vreme je za novu veštinu!';
+
+  @override
+  String get readyForProgress => 'Spreman za napredak danas?';
+
+  @override
+  String get chatWithSkillena => 'Razgovaraj sa\nSkillena AI';
+
+  @override
+  String get askAndGetAdvice => 'Postavi pitanje i dobij personalizovan savet.';
+
+  @override
+  String get startChat => 'Počni razgovor';
+
+  @override
+  String get continueLastChat => 'Nastavi poslednji razgovor';
+
+  @override
+  String get lastChatPlaceholder => 'Nema prethodnog razgovora.';
+
+  @override
+  String get askAboutSoftSkills => 'Pitaj o mekim veštinama';
+
+  @override
+  String get saveAnswer => 'Sačuvaj odgovor';
+
+  @override
+  String get createGoal => 'Napravi cilj';
+
+  @override
+  String get practiceWithMe => 'Vežbaj sa mnom';
+
+  @override
+  String get continueChat => 'Nastavi razgovor';
+
+  @override
+  String get home => 'Početna';
+
+  @override
+  String get saveThisConversation => 'Sačuvaj ovaj razgovor';
+
+  @override
+  String get addTitle => 'Dodaj naslov';
+
+  @override
+  String get addTitleHint => 'Naslov razgovora...';
+
+  @override
+  String get summaryAutomatic => 'Sažetak (automatski)';
+
+  @override
+  String get addTo => 'Dodaj u';
+
+  @override
+  String get myLibrary => 'Moja biblioteka';
+
+  @override
+  String get myGoals => 'Moji ciljevi';
+
+  @override
+  String get reminder => 'Podsetnik';
+
+  @override
+  String get skip => 'Preskoči';
+
+  @override
+  String get createNewGoal => 'Napravi novi cilj';
+
+  @override
+  String get createGoalSubtitle =>
+      'Postavi cilj i AI će napraviti korake za tebe.';
+
+  @override
+  String get goalTitle => 'Naziv cilja';
+
+  @override
+  String get selectSkill => 'Izaberi povezanu veštinu';
+
+  @override
+  String get aiWillGenerateSubtasks =>
+      'AI će automatski generisati 5 konkretnih podzadataka za tvoj cilj.';
+
+  @override
+  String get pleaseFillGoalFields => 'Unesi naziv i izaberi veštinu.';
+
+  @override
+  String get cancel => 'Otkaži';
+
+  @override
+  String get addGoalTitle => 'Dodaj naziv cilja';
+
+  @override
+  String get practiceWithSkillena => 'Vežbaj sa Skillena AI';
+
+  @override
+  String get chooseScenario => 'Izaberi situaciju koju želiš da vežbaš.';
+
+  @override
+  String get scenarioDifficultConversation => 'Težak razgovor sa kolegom';
+
+  @override
+  String get scenarioPresentation => 'Prezentacija pred timom';
+
+  @override
+  String get scenarioFeedback => 'Davanje povratne informacije';
+
+  @override
+  String get scenarioClientMeeting => 'Sastanak sa klijentom';
+
+  @override
+  String get scenarioNegotiation => 'Pregovaranje';
+
+  @override
+  String get scenarioOther => 'Druga situacija';
+
+  @override
+  String get describeYourSituation => 'Opiši svoju situaciju';
+
+  @override
+  String get describeScenarioHint => 'npr. Traženje povišice od menadžera...';
+
+  @override
+  String get startPractice => 'Započni vežbu';
+
+  @override
+  String get yourProgress => 'Tvoj napredak';
+
+  @override
+  String get totalProgress => 'Ukupan napredak';
+
+  @override
+  String get conversations => 'Razgovori';
+
+  @override
+  String get completedExercises => 'Završene vežbe';
+
+  @override
+  String get daysInARow => 'Dana zaredom';
+
+  @override
+  String get activeGoals => 'Aktivni ciljevi';
+
+  @override
+  String get progressBySkills => 'Napredak po veštinama';
+
+  @override
+  String get active => 'Aktivni';
+
+  @override
+  String get completed => 'Završeni';
+
+  @override
+  String get progress => 'Progres';
+
+  @override
+  String get steps => 'koraka';
+
+  @override
+  String get noGoalsYet => 'Nema ciljeva.\nNapravi prvi cilj da počneš!';
+
+  @override
+  String get noSubtasksYet => 'Nema podzadataka.';
+
+  @override
+  String get tabConversations => 'Razgovori';
+
+  @override
+  String get tabLessons => 'Lekcije';
+
+  @override
+  String get tabTechniques => 'Tehnike';
+
+  @override
+  String get tagConversation => 'Razgovor';
+
+  @override
+  String get tagLesson => 'Lekcija';
+
+  @override
+  String get tagTechnique => 'Tehnika';
+
+  @override
+  String get noConversationsSaved => 'Nema sačuvanih razgovora.';
+
+  @override
+  String get noTechniquesSaved => 'Nema sačuvanih tehnika.';
+
+  @override
+  String get removeLesson => 'Ukloni iz biblioteke';
+
+  @override
+  String get dailyAdvice => 'Dnevni savet';
+
+  @override
+  String get applyToday => 'Primeni danas';
+
+  @override
+  String get applied => 'Primenjeno!';
+
+  @override
+  String get adviceHistory => 'Istorija saveta';
+
+  @override
+  String get noAdviceHistory => 'Nema prethodnih saveta.';
+
+  @override
+  String get techniqueOfDay => 'Tehnika dana';
+
+  @override
+  String get practiceWithAI => 'Vežbaj sa AI';
+
+  @override
+  String get techniqueSteps => 'Koraci tehnike';
+
+  @override
+  String get pleaseAddTitle => 'Dodaj naslov';
+
+  @override
+  String get conversationSaved => 'Razgovor je uspešno sačuvan!';
+
+  @override
+  String get saveTechnique => 'Sačuvaj tehniku';
+
+  @override
+  String get techniqueSaved => 'Tehnika sačuvana!';
+
+  @override
+  String get pleaseSelectOption => 'Izaberi bar jednu opciju';
+
+  @override
+  String get fiveMoreTips => 'Još 5 saveta';
+
+  @override
+  String get teachMeMore => 'Nauči me više';
 }
