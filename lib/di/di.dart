@@ -4,6 +4,7 @@ import 'package:softai/cubit/auth_cubit.dart';
 import 'package:softai/cubit/user_cubit.dart';
 import 'package:softai/service/firebase_service.dart';
 import 'package:softai/service/lessons_service.dart';
+import 'package:softai/service/subscription_service.dart';
 
 final GetIt locator = GetIt.instance;
 
@@ -11,7 +12,8 @@ Future<void> initDependencies() async {
   // Services
   locator.registerLazySingleton<FirebaseService>(() => FirebaseService());
   locator.registerLazySingleton<LessonService>(() => LessonService());
-
+  locator
+      .registerLazySingleton<SubscriptionService>(() => SubscriptionService());
   // Cubits
   locator.registerLazySingleton<AuthCubit>(
     () => AuthCubit(locator<FirebaseService>()),

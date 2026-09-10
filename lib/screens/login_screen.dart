@@ -216,8 +216,229 @@ class _LoginScreenState extends State<LoginScreen> {
                               children: [
                                 GestureDetector(
                                   onTap: () {
-                                    authCubit.forgotPassword(
-                                        emailController.text.trim());
+                                    showDialog(
+                                      context: context,
+                                      builder: (dialogContext) {
+                                        return Dialog(
+                                          backgroundColor: Colors.transparent,
+                                          child: Container(
+                                            padding: const EdgeInsets.all(3),
+                                            decoration: BoxDecoration(
+                                              borderRadius:
+                                                  BorderRadius.circular(20),
+                                              border: Border.all(
+                                                color: Colors.white
+                                                    .withValues(alpha: 0.8),
+                                                width: 1.5,
+                                              ),
+                                            ),
+                                            child: Container(
+                                              padding: const EdgeInsets.all(20),
+                                              decoration: BoxDecoration(
+                                                gradient: const LinearGradient(
+                                                  begin: Alignment.topCenter,
+                                                  end: Alignment.bottomCenter,
+                                                  colors: [
+                                                    Color(0xFF4DD9E8),
+                                                    Color(0xFF80F0D0),
+                                                  ],
+                                                ),
+                                                borderRadius:
+                                                    BorderRadius.circular(16),
+                                              ),
+                                              child: Column(
+                                                mainAxisSize: MainAxisSize.min,
+                                                children: [
+                                                  Text(
+                                                    context.isEnglish
+                                                        ? 'Reset password'
+                                                        : 'Resetuj šifru',
+                                                    style: const TextStyle(
+                                                      fontFamily: 'Montserrat',
+                                                      fontSize: 18,
+                                                      fontWeight:
+                                                          FontWeight.w700,
+                                                      color: Color(0xFF0055CC),
+                                                    ),
+                                                  ),
+                                                  const SizedBox(height: 8),
+                                                  Text(
+                                                    context.isEnglish
+                                                        ? 'Enter your email and we\'ll send you a reset link.'
+                                                        : 'Unesi svoj email i poslaćemo ti link za resetovanje.',
+                                                    textAlign: TextAlign.center,
+                                                    style: TextStyle(
+                                                      fontFamily: 'Montserrat',
+                                                      fontSize: 13,
+                                                      color: Colors.black
+                                                          .withValues(
+                                                              alpha: 0.7),
+                                                    ),
+                                                  ),
+                                                  const SizedBox(height: 16),
+                                                  Container(
+                                                    decoration: BoxDecoration(
+                                                      color: Colors.white,
+                                                      borderRadius:
+                                                          BorderRadius.circular(
+                                                              14),
+                                                    ),
+                                                    child: TextField(
+                                                      controller:
+                                                          emailController,
+                                                      keyboardType:
+                                                          TextInputType
+                                                              .emailAddress,
+                                                      style: const TextStyle(
+                                                        fontFamily:
+                                                            'Montserrat',
+                                                        fontSize: 15,
+                                                        color: Colors.black87,
+                                                      ),
+                                                      decoration:
+                                                          InputDecoration(
+                                                        hintText: context
+                                                                .isEnglish
+                                                            ? 'your@email.com'
+                                                            : 'tvoj@email.com',
+                                                        hintStyle: TextStyle(
+                                                          fontFamily:
+                                                              'Montserrat',
+                                                          fontSize: 14,
+                                                          color: Colors
+                                                              .grey.shade400,
+                                                        ),
+                                                        border:
+                                                            InputBorder.none,
+                                                        contentPadding:
+                                                            const EdgeInsets
+                                                                .all(14),
+                                                      ),
+                                                    ),
+                                                  ),
+                                                  const SizedBox(height: 20),
+                                                  Row(
+                                                    mainAxisAlignment:
+                                                        MainAxisAlignment.end,
+                                                    children: [
+                                                      TextButton(
+                                                        onPressed: () =>
+                                                            Navigator.pop(
+                                                                dialogContext),
+                                                        child: Text(
+                                                          context.isEnglish
+                                                              ? 'Cancel'
+                                                              : 'Otkaži',
+                                                          style:
+                                                              const TextStyle(
+                                                            fontFamily:
+                                                                'Montserrat',
+                                                            fontSize: 15,
+                                                            color: Colors.grey,
+                                                          ),
+                                                        ),
+                                                      ),
+                                                      const SizedBox(width: 8),
+                                                      ElevatedButton(
+                                                        onPressed: () async {
+                                                          final email =
+                                                              emailController
+                                                                  .text
+                                                                  .trim();
+                                                          if (email.isEmpty)
+                                                            return;
+
+                                                          final navigator =
+                                                              Navigator.of(
+                                                                  dialogContext);
+                                                          final scaffoldMessenger =
+                                                              ScaffoldMessenger
+                                                                  .of(context);
+                                                          final isEng =
+                                                              context.isEnglish;
+
+                                                          navigator.pop();
+
+                                                          try {
+                                                            await locator<
+                                                                    AuthCubit>()
+                                                                .forgotPassword(
+                                                                    email);
+                                                            scaffoldMessenger
+                                                                .showSnackBar(
+                                                              SnackBar(
+                                                                content: Text(isEng
+                                                                    ? 'Reset link sent to $email'
+                                                                    : 'Link za resetovanje poslat na $email'),
+                                                                backgroundColor:
+                                                                    const Color(
+                                                                        0xFF0055CC),
+                                                                behavior:
+                                                                    SnackBarBehavior
+                                                                        .floating,
+                                                              ),
+                                                            );
+                                                          } catch (e) {
+                                                            scaffoldMessenger
+                                                                .showSnackBar(
+                                                              SnackBar(
+                                                                content: Text(
+                                                                    'Error: $e'),
+                                                                backgroundColor:
+                                                                    Colors.red
+                                                                        .shade700,
+                                                                behavior:
+                                                                    SnackBarBehavior
+                                                                        .floating,
+                                                              ),
+                                                            );
+                                                          }
+                                                        },
+                                                        style: ElevatedButton
+                                                            .styleFrom(
+                                                          backgroundColor:
+                                                              const Color(
+                                                                  0xFF0055CC),
+                                                          foregroundColor:
+                                                              Colors.white,
+                                                          shape:
+                                                              RoundedRectangleBorder(
+                                                            borderRadius:
+                                                                BorderRadius
+                                                                    .circular(
+                                                                        12),
+                                                          ),
+                                                          padding:
+                                                              const EdgeInsets
+                                                                  .symmetric(
+                                                                  horizontal:
+                                                                      20,
+                                                                  vertical: 12),
+                                                          elevation: 0,
+                                                        ),
+                                                        child: Text(
+                                                          context.isEnglish
+                                                              ? 'Send link'
+                                                              : 'Pošalji link',
+                                                          style:
+                                                              const TextStyle(
+                                                            fontFamily:
+                                                                'Montserrat',
+                                                            fontSize: 15,
+                                                            fontWeight:
+                                                                FontWeight.w700,
+                                                          ),
+                                                        ),
+                                                      ),
+                                                    ],
+                                                  ),
+                                                ],
+                                              ),
+                                            ),
+                                          ),
+                                        );
+                                      },
+                                    );
                                   },
                                   child: Text(
                                     l10n.forgotPassword,

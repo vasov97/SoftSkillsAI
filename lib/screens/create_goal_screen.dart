@@ -353,6 +353,9 @@ import 'package:http/http.dart' as http;
 import 'package:softai/cubit/user_cubit.dart';
 import 'package:softai/di/di.dart';
 import 'package:softai/extensions/l10n_extension.dart';
+import 'package:softai/service/firebase_service.dart';
+import 'package:softai/service/subscription_service.dart';
+import 'package:softai/widgets/pro_overlay.dart';
 
 class CreateGoalScreen extends StatefulWidget {
   final String apiKey;
@@ -486,6 +489,7 @@ Return ONLY the JSON. No extra text.
           ];
   }
 
+  final _subscriptionService = locator<SubscriptionService>();
   Future<void> _createGoal() async {
     final title = _titleController.text.trim();
     final skill = _selectedSkill;
@@ -504,7 +508,21 @@ Return ONLY the JSON. No extra text.
       );
       return;
     }
+    if (!_subscriptionService.isPro) {
+      final goals = await locator<FirebaseService>().getGoals();
+      final goalsForThisSkill =
+          goals.where((g) => g.skill == skill && g.isActive).length;
 
+      if (goalsForThisSkill >= SubscriptionService.freeGoalsPerSkill) {
+        await ProLockOverlay.show(
+          context,
+          reason: context.isEnglish
+              ? 'Free users can have 1 active goal per skill. Complete this skill\'s goal or upgrade to Pro.'
+              : 'Besplatni korisnici imaju 1 aktivan cilj po veštini. Završi cilj ili nadogradi na Pro.',
+        );
+        return;
+      }
+    }
     setState(() => _isCreating = true);
 
     try {

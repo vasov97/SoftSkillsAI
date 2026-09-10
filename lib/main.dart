@@ -8,10 +8,14 @@ import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
+import 'package:purchases_flutter/purchases_flutter.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import 'package:softai/auth_wrapper.dart';
 import 'package:softai/di/di.dart';
 import 'package:softai/fcm_background.dart';
 import 'package:softai/l10n/app_localizations.dart';
-import 'package:softai/service/auth_wrapper.dart';
+import 'package:softai/screens/onboarding_flow.dart';
+import 'package:softai/service/subscription_service.dart';
 import 'package:softai/theme/app_colors.dart';
 
 import 'firebase_options.dart';
@@ -112,6 +116,23 @@ void wireTokenRefresh(String uid) {
   });
 }
 
+Future<void> _configureRevenueCat() async {
+  await Purchases.setLogLevel(LogLevel.debug); // remove in production
+
+  PurchasesConfiguration configuration;
+  if (Platform.isAndroid) {
+    configuration =
+        PurchasesConfiguration(dotenv.env['REVENUECAT_ANDROID_KEY'] ?? '');
+  } else if (Platform.isIOS) {
+    configuration =
+        PurchasesConfiguration(dotenv.env['REVENUECAT_IOS_KEY'] ?? '');
+  } else {
+    return;
+  }
+
+  await Purchases.configure(configuration);
+}
+
 // Foreground messages → show a local notification
 void _listenForegroundMessages() {
   FirebaseMessaging.onMessage.listen((RemoteMessage message) {
@@ -202,12 +223,12 @@ Future<void> main() async {
 
   await dotenv.load(fileName: ".env");
   await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
-
+  await _configureRevenueCat();
   // CRITICAL: Background handler must be set BEFORE any messaging usage
   FirebaseMessaging.onBackgroundMessage(firebaseMessagingBackgroundHandler);
 
   await initDependencies();
-
+  await locator<SubscriptionService>().initialize();
   // Initialize local notifications
   await _initLocalNotifications();
 
@@ -263,7 +284,7 @@ class MyApp extends StatelessWidget {
           thumbColor: WidgetStateProperty.all(AppColors.primaryBlue),
         ),
       ),
-      home: const AuthGate(),
+      home: const OnboardingCheck(),
       localizationsDelegates: const [
         AppLocalizations.delegate,
         GlobalMaterialLocalizations.delegate,
@@ -280,5 +301,41 @@ class MyApp extends StatelessWidget {
         return supportedLocales.first;
       },
     );
+  }
+}
+
+class OnboardingCheck extends StatefulWidget {
+  const OnboardingCheck({super.key});
+
+  @override
+  State<OnboardingCheck> createState() => _OnboardingCheckState();
+}
+
+class _OnboardingCheckState extends State<OnboardingCheck> {
+  bool? _showOnboarding;
+
+  @override
+  void initState() {
+    super.initState();
+    _check();
+  }
+
+  Future<void> _check() async {
+    final prefs = await SharedPreferences.getInstance();
+    final completed = prefs.getBool('onboarding_completed') ?? false;
+    if (mounted) setState(() => _showOnboarding = !completed);
+    //if (mounted) setState(() => _showOnboarding = true);
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    if (_showOnboarding == null) {
+      return const Scaffold(
+        backgroundColor: Color(0xFF006FFF),
+        body: Center(child: CircularProgressIndicator(color: Colors.white)),
+      );
+    }
+    if (_showOnboarding!) return const OnboardingFlow();
+    return const AuthGate();
   }
 }

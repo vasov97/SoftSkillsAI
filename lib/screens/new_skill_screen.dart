@@ -4,6 +4,8 @@ import 'package:softai/cubit/user_cubit.dart';
 import 'package:softai/di/di.dart';
 import 'package:softai/extensions/l10n_extension.dart';
 import 'package:softai/model/user.dart';
+import 'package:softai/service/subscription_service.dart';
+import 'package:softai/widgets/pro_overlay.dart';
 
 import 'skills_details_screen.dart';
 
@@ -34,7 +36,7 @@ class _NewSkillScreenState extends State<NewSkillScreen>
 
   late final UserCubit userCubit;
   bool _isSaving = false;
-
+  final _subscriptionService = locator<SubscriptionService>();
   @override
   void initState() {
     super.initState();
@@ -124,19 +126,29 @@ class _NewSkillScreenState extends State<NewSkillScreen>
 
     return ListView(
       children: [
-        for (final skill in _skillsList)
+        for (int i = 0; i < _skillsList.length; i++)
           _SoftSkillTile(
-            skillKey: skill,
-            text: context.getSkillTranslation(skill, l10n),
-            isSelected: sessionSkills.containsKey(skill),
+            skillKey: _skillsList[i],
+            text: context.getSkillTranslation(_skillsList[i], l10n),
+            isSelected: sessionSkills.containsKey(_skillsList[i]),
             isDisabled: false,
-            alreadyTrained: _dbSkills!.containsKey(skill),
-            onTap: () {
+            isLocked: _subscriptionService.isSkillLocked(i, 0),
+            alreadyTrained: _dbSkills!.containsKey(_skillsList[i]),
+            onTap: () async {
+              if (_subscriptionService.isSkillLocked(i, 0)) {
+                await ProLockOverlay.show(
+                  context,
+                  reason: context.isEnglish
+                      ? 'Free users can access 2 skills. Upgrade to Pro to unlock all 20 skills.'
+                      : 'Besplatni korisnici imaju pristup 2 veštine. Nadogradi na Pro da otključaš svih 20.',
+                );
+                return;
+              }
               setState(() {
-                if (sessionSkills.containsKey(skill)) {
-                  sessionSkills.remove(skill);
+                if (sessionSkills.containsKey(_skillsList[i])) {
+                  sessionSkills.remove(_skillsList[i]);
                 } else {
-                  sessionSkills[skill] = 0.0;
+                  sessionSkills[_skillsList[i]] = 0.0;
                 }
               });
             },
@@ -341,7 +353,7 @@ class _SoftSkillTile extends StatelessWidget {
   final bool isDisabled;
   final bool alreadyTrained;
   final VoidCallback onTap;
-
+  final bool isLocked;
   const _SoftSkillTile({
     required this.text,
     required this.skillKey,
@@ -349,6 +361,7 @@ class _SoftSkillTile extends StatelessWidget {
     this.isDisabled = false,
     this.alreadyTrained = false,
     required this.onTap,
+    required this.isLocked,
   });
 
   @override
@@ -402,7 +415,34 @@ class _SoftSkillTile extends StatelessWidget {
                   ),
                 ),
               ),
-              if (isSelected)
+              if (isLocked)
+                Container(
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                  decoration: BoxDecoration(
+                    gradient: const LinearGradient(
+                      colors: [Color(0xFFFFD700), Color(0xFFFFA500)],
+                    ),
+                    borderRadius: BorderRadius.circular(10),
+                  ),
+                  child: const Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Icon(Icons.lock, size: 12, color: Colors.white),
+                      SizedBox(width: 3),
+                      Text(
+                        'PRO',
+                        style: TextStyle(
+                          fontFamily: 'Montserrat',
+                          fontSize: 10,
+                          fontWeight: FontWeight.w800,
+                          color: Colors.white,
+                        ),
+                      ),
+                    ],
+                  ),
+                )
+              else if (isSelected)
                 Container(
                   width: 20,
                   height: 20,
@@ -411,8 +451,8 @@ class _SoftSkillTile extends StatelessWidget {
                     color: Colors.white.withValues(alpha: 0.9),
                     border: Border.all(color: Colors.white, width: 2),
                   ),
-                ),
-              if (alreadyTrained && !isSelected)
+                )
+              else if (alreadyTrained)
                 const Icon(
                   Icons.replay,
                   color: Colors.white,

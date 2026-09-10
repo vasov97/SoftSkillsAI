@@ -481,4 +481,98 @@ class AppLocalizationsSr extends AppLocalizations {
 
   @override
   String get teachMeMore => 'Nauči me više';
+
+  @override
+  String get skillQuiz => 'Kviz veština';
+
+  @override
+  String get answered => 'odgovoreno';
+
+  @override
+  String get question => 'Pitanje';
+
+  @override
+  String get reflection => 'Samoprocena';
+
+  @override
+  String get submitQuiz => 'Pošalji';
+
+  @override
+  String get quizPassed => 'Čestitamo!';
+
+  @override
+  String get quizFailed => 'Još malo';
+
+  @override
+  String get quizPassedMessage =>
+      'Pokazao si odlično razumevanje ove veštine. Tvoj cilj je sada završen!';
+
+  @override
+  String get quizFailedMessage =>
+      'Potrebno je 90% za prolaz. Pregledaj podzadatke i pokušaj ponovo kad budeš spreman.';
+
+  @override
+  String get quizFailedSubtasksAdded =>
+      'Dodato je 2 nova podzadatka. Završi sve podzadatke da ponovo pokušaš kviz.';
+
+  @override
+  String get quizFailedSubtasksReset =>
+      'Podzadaci resetovani sa 2 nova dodata. Nastavi da vežbaš!';
+
+  @override
+  String get tryAgain => 'Nazad na cilj';
+
+  @override
+  String get onboardingWelcomeTitle => 'Upoznaj Skillenu';
+
+  @override
+  String get onboardingWelcomeSubtitle =>
+      'Tvoj lični AI trener za meke veštine koje su zaista bitne';
+
+  @override
+  String get onboardingSkillsTitle => '20+ mekih veština za savladavanje';
+
+  @override
+  String get onboardingSkillsSubtitle =>
+      'Od komunikacije do liderstva — razvij veštine koje oblikuju tvoju karijeru';
+
+  @override
+  String get onboardingChatTitle => 'Razgovaraj sa AI trenerom';
+
+  @override
+  String get onboardingChatSubtitle =>
+      'Postavljaj pitanja, dobij savete i vežbaj realne situacije bilo kad';
+
+  @override
+  String get onboardingChatBubble1 => 'Kako da vodim težak razgovor?';
+
+  @override
+  String get onboardingChatBubble2 => 'Prvo slušaj, pa reaguj';
+
+  @override
+  String get onboardingChatBubble3 => 'Evo 5 koraka za tebe...';
+
+  @override
+  String get onboardingGoalsTitle => 'Postavi ciljeve, prati napredak';
+
+  @override
+  String get onboardingGoalsSubtitle =>
+      'Podeli velike ciljeve u male dnevne korake i prati svoj rast';
+
+  @override
+  String get onboardingGoalExample => 'Održi samouverenu prezentaciju';
+
+  @override
+  String get onboardingInterestsTitle => 'Koje veštine su ti najvažnije?';
+
+  @override
+  String get onboardingInterestsSubtitle =>
+      'Izaberi nekoliko — prilagodićemo tvoje iskustvo';
+
+  @override
+  String get onboardingReadyTitle => 'Sve je spremno!';
+
+  @override
+  String get onboardingReadySubtitle =>
+      'Hajde da izgradimo tvoje meke veštine, jedan razgovor po jedan';
 }

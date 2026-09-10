@@ -14,6 +14,7 @@ import 'package:softai/screens/chat_screen.dart';
 import 'package:softai/screens/daily_advice_screen.dart';
 import 'package:softai/screens/goals_screen.dart';
 import 'package:softai/screens/new_skill_screen.dart';
+import 'package:softai/screens/paywall_screen.dart';
 import 'package:softai/screens/saved_lessons_screen.dart';
 import 'package:softai/screens/technique_screen.dart';
 import 'package:softai/screens/track_progress_screen.dart';
@@ -702,7 +703,52 @@ class _ProfileScreenState extends State<ProfileScreen>
                       // Skillena AI + Logout
                       Row(
                         children: [
-                          const SizedBox(width: 48),
+                          GestureDetector(
+                            onTap: () {
+                              Navigator.of(context).push(
+                                MaterialPageRoute(
+                                    builder: (_) => const PaywallScreen()),
+                              );
+                            },
+                            child: Container(
+                              padding: const EdgeInsets.symmetric(
+                                  horizontal: 12, vertical: 6),
+                              decoration: BoxDecoration(
+                                gradient: const LinearGradient(
+                                  colors: [
+                                    Color(0xFFFFD700),
+                                    Color(0xFFFFA500)
+                                  ],
+                                ),
+                                borderRadius: BorderRadius.circular(20),
+                                boxShadow: [
+                                  BoxShadow(
+                                    color: Colors.black.withValues(alpha: 0.15),
+                                    blurRadius: 4,
+                                    offset: const Offset(0, 2),
+                                  ),
+                                ],
+                              ),
+                              child: Row(
+                                mainAxisSize: MainAxisSize.min,
+                                children: const [
+                                  Icon(Icons.star,
+                                      color: Colors.white, size: 16),
+                                  SizedBox(width: 4),
+                                  Text(
+                                    'Pro',
+                                    style: TextStyle(
+                                      fontFamily: 'Montserrat',
+                                      color: Colors.white,
+                                      fontSize: 13,
+                                      fontWeight: FontWeight.w800,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ),
+                          const SizedBox(width: 24),
                           Expanded(
                             child: Row(
                               mainAxisAlignment: MainAxisAlignment.center,
@@ -748,6 +794,7 @@ class _ProfileScreenState extends State<ProfileScreen>
                           ),
                         ],
                       ),
+
                       const SizedBox(height: 20),
 
                       // Welcome

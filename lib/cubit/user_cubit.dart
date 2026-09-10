@@ -1,5 +1,6 @@
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
+import 'package:flutter/foundation.dart';
 import 'package:softai/model/goal.dart';
 import 'package:softai/model/user.dart';
 import 'package:softai/service/firebase_service.dart';
@@ -12,6 +13,25 @@ class UserCubit extends Cubit<UserState> {
   final LessonService lessonService;
 
   UserCubit(this.firebaseService, this.lessonService) : super(UserInitial());
+  String? _pendingQuizGoalId;
+  bool? _lastQuizPassed;
+
+  String? get pendingQuizGoalId => _pendingQuizGoalId;
+  bool? get lastQuizPassed => _lastQuizPassed;
+
+  void setPendingQuiz(String goalId) {
+    _pendingQuizGoalId = goalId;
+    _lastQuizPassed = null;
+  }
+
+  void setQuizResult(bool passed) {
+    _lastQuizPassed = passed;
+  }
+
+  void clearQuizResult() {
+    _pendingQuizGoalId = null;
+    _lastQuizPassed = null;
+  }
 
   Future<void> loadUser() async {
     emit(UserLoading());
@@ -26,28 +46,6 @@ class UserCubit extends Cubit<UserState> {
       emit(UserError("Error loading user: $e"));
     }
   }
-
-  // Future<void> toggleSkill(String skill) async {
-  //   if (state is! UserLoaded) return;
-
-  //   final currentUser = (state as UserLoaded).user;
-  //   final skillsMap = Map<String, double>.from(currentUser.selectedSkills);
-
-  //   try {
-  //     await firebaseService.toggleSkill(skill);
-
-  //     if (skillsMap.containsKey(skill)) {
-  //       // Remove skill
-  //       skillsMap.remove(skill);
-  //     } else {
-  //       // Add skill with initial progress 0
-  //       skillsMap[skill] = 0;
-  //     }
-  //     emit(UserLoaded(currentUser.copyWith(selectedSkills: skillsMap)));
-  //   } catch (e) {
-  //     emit(UserError("Error updating skills: $e"));
-  //   }
-  // }
 
   Future<void> saveLessonForSkill(String skill, List<String> tips) async {
     try {
@@ -71,6 +69,17 @@ class UserCubit extends Cubit<UserState> {
       await lessonService.removeLesson(skill);
     } catch (e) {
       emit(UserError("Error removing lesson: $e"));
+    }
+  }
+
+  Future<void> completeGoalById(String goalId) async {
+    try {
+      final goals = await firebaseService.getGoals();
+      final goal = goals.firstWhere((g) => g.id == goalId);
+      await firebaseService.completeGoal(goal);
+      await loadUser();
+    } catch (e) {
+      debugPrint('Failed to complete goal: $e');
     }
   }
 
@@ -151,16 +160,24 @@ class UserCubit extends Cubit<UserState> {
     return await firebaseService.getGoals();
   }
 
-  // Future<void> toggleSubtask({
-  //   required Goal goal,
-  //   required int index,
-  //   required bool done,
-  // }) async {
-  //   await FirebaseService().updateGoalSubtask(
-  //     goalId: goal.id,
-  //     index: index,
-  //     done: done,
-  //   );
-  //   await loadUser(); // refresh local state
-  // }
+  Future<void> addSubtasksToGoal(String goalId, List<String> currentSubtasks,
+      List<String> newSubtasks) async {
+    try {
+      final uid = firebaseService.currentUser?.uid;
+      if (uid == null) return;
+
+      final allSubtasks = [...currentSubtasks, ...newSubtasks];
+      final allDone = List<bool>.filled(allSubtasks.length, false);
+
+      await firebaseService.updateGoalSubtasksReset(
+        uid: uid,
+        goalId: goalId,
+        subtasks: allSubtasks,
+        subtasksDone: allDone,
+      );
+      await loadUser();
+    } catch (e) {
+      debugPrint('Failed to add subtasks: $e');
+    }
+  }
 }

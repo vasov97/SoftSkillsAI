@@ -3,6 +3,8 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:softai/cubit/user_cubit.dart';
 import 'package:softai/di/di.dart';
 import 'package:softai/extensions/l10n_extension.dart';
+import 'package:softai/service/subscription_service.dart';
+import 'package:softai/widgets/pro_overlay.dart';
 
 import 'skills_details_screen.dart';
 
@@ -24,7 +26,7 @@ class _OnboardScreenState extends State<OnboardScreen>
   final Set<String> _newlySelectedSkills = {};
 
   late final UserCubit userCubit;
-
+  final _subscriptionService = locator<SubscriptionService>();
   @override
   void initState() {
     super.initState();
@@ -235,35 +237,29 @@ class _OnboardScreenState extends State<OnboardScreen>
                                                 final skill = _skillsList[i];
                                                 final isSelected = userSkills
                                                     .containsKey(skill);
+                                                final isLocked =
+                                                    _subscriptionService
+                                                        .isSkillLocked(i, 0);
 
-                                                // return _SoftSkillTile(
-                                                //   skillKey: skill,
-                                                //   text: context
-                                                //       .getSkillTranslation(
-                                                //           skill, l10n),
-                                                //   isSelected: isSelected,
-                                                //   isDisabled:
-                                                //       isSelected, // keep your original behavior
-                                                //   onTap: () async {
-                                                //     // await userCubit.toggleSkill(
-                                                //     //   skillName: skill,
-                                                //     // );
-                                                //     // // local UI hint you already had
-                                                //     // setState(() {
-                                                //     //   _newlySelectedSkills
-                                                //     //       .add(skill);
-                                                //     // });
-
-                                                //   },
-                                                // );
-                                                return _SoftSkillTile(
+                                                return SoftSkillTile(
                                                   skillKey: skill,
                                                   text: context
                                                       .getSkillTranslation(
                                                           skill, l10n),
                                                   isSelected: isSelected,
                                                   isDisabled: false,
+                                                  isLocked: isLocked,
                                                   onTap: () async {
+                                                    if (isLocked) {
+                                                      await ProLockOverlay.show(
+                                                        context,
+                                                        reason: context
+                                                                .isEnglish
+                                                            ? 'Free users can select 2 skills. Upgrade to Pro to unlock all 20 skills.'
+                                                            : 'Besplatni korisnici biraju 2 veštine. Nadogradi na Pro da otključaš svih 20.',
+                                                      );
+                                                      return;
+                                                    }
                                                     final navigator =
                                                         Navigator.of(context);
 
@@ -454,19 +450,21 @@ const List<String> _skillsList = [
   "Self-Motivation",
 ];
 
-class _SoftSkillTile extends StatelessWidget {
+class SoftSkillTile extends StatelessWidget {
   final String text;
   final String skillKey;
   final bool isSelected;
   final bool isDisabled;
   final VoidCallback onTap;
-
-  const _SoftSkillTile({
+  final bool isLocked;
+  const SoftSkillTile({
+    super.key,
     required this.text,
     required this.skillKey,
     required this.isSelected,
     this.isDisabled = false,
     required this.onTap,
+    required this.isLocked,
   });
 
   @override
@@ -500,22 +498,49 @@ class _SoftSkillTile extends StatelessWidget {
                 ),
               ),
             ),
-            Container(
-              width: 22,
-              height: 22,
-              decoration: BoxDecoration(
-                shape: BoxShape.circle,
-                color:
-                    isSelected ? const Color(0xFF0055CC) : Colors.transparent,
-                border: Border.all(
-                  color: isSelected ? const Color(0xFF0055CC) : Colors.white,
-                  width: 2,
+            if (isLocked)
+              Container(
+                padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                decoration: BoxDecoration(
+                  gradient: const LinearGradient(
+                    colors: [Color(0xFFFFD700), Color(0xFFFFA500)],
+                  ),
+                  borderRadius: BorderRadius.circular(10),
                 ),
+                child: const Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Icon(Icons.lock, size: 12, color: Colors.white),
+                    SizedBox(width: 3),
+                    Text(
+                      'PRO',
+                      style: TextStyle(
+                        fontFamily: 'Montserrat',
+                        fontSize: 10,
+                        fontWeight: FontWeight.w800,
+                        color: Colors.white,
+                      ),
+                    ),
+                  ],
+                ),
+              )
+            else
+              Container(
+                width: 22,
+                height: 22,
+                decoration: BoxDecoration(
+                  shape: BoxShape.circle,
+                  color:
+                      isSelected ? const Color(0xFF0055CC) : Colors.transparent,
+                  border: Border.all(
+                    color: isSelected ? const Color(0xFF0055CC) : Colors.white,
+                    width: 2,
+                  ),
+                ),
+                child: isSelected
+                    ? const Icon(Icons.check, size: 14, color: Colors.white)
+                    : null,
               ),
-              child: isSelected
-                  ? const Icon(Icons.check, size: 14, color: Colors.white)
-                  : null,
-            ),
           ],
         ),
       ),

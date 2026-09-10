@@ -11,6 +11,7 @@ import 'package:softai/extensions/l10n_extension.dart';
 import 'package:softai/model/user.dart';
 import 'package:softai/res/quotes.dart';
 import 'package:softai/screens/chat_screen.dart';
+import 'package:softai/screens/main_screen.dart';
 
 class SkillDetailScreen extends StatefulWidget {
   final Map<String, double> skills;
@@ -289,7 +290,10 @@ class _SkillDetailScreenState extends State<SkillDetailScreen> {
       }
 
       if (mounted) {
-        Navigator.of(context).popUntil((route) => route.isFirst);
+        Navigator.of(context).pushAndRemoveUntil(
+          MaterialPageRoute(builder: (_) => MainScreen(user: widget.user)),
+          (route) => false,
+        );
       }
     }
   }

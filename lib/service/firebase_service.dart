@@ -31,6 +31,36 @@ class FirebaseService {
     }, SetOptions(merge: true));
   }
 
+  Future<void> updateGoalSubtasksReset({
+    required String uid,
+    required String goalId,
+    required List<String> subtasks,
+    required List<bool> subtasksDone,
+  }) async {
+    final docRef = FirebaseFirestore.instance
+        .collection('users')
+        .doc(uid)
+        .collection('goals')
+        .doc(goalId);
+
+    await FirebaseFirestore.instance.runTransaction((tx) async {
+      final snap = await tx.get(docRef);
+      if (!snap.exists) {
+        throw Exception("Goal not found");
+      }
+
+      tx.update(docRef, {
+        'subtasks': subtasks,
+        'subtasksDone': subtasksDone,
+        'subtaskNotified': List<bool>.filled(subtasks.length, false),
+        'lastSubtaskToggledAt': FieldValue.serverTimestamp(),
+      });
+    });
+
+    debugPrint(
+        '✅ updateGoalSubtasksReset: wrote ${subtasks.length} subtasks to goal $goalId');
+  }
+
   void startTokenRefreshListener(String uid) {
     _tokenRefreshSub?.cancel();
     _tokenRefreshSub = FirebaseMessaging.instance.onTokenRefresh.listen((t) {
@@ -543,29 +573,52 @@ class FirebaseService {
         .collection('users')
         .doc(uid)
         .collection('goals')
-        .get();
+        .get(const GetOptions(source: Source.server));
 
     return snapshot.docs
         .map((doc) => Goal.fromMap(doc.id, doc.data()))
         .toList();
   }
 
+  // Future<void> completeGoal(Goal goal) async {
+  //   final uid = currentUser?.uid;
+  //   final goalRef = FirebaseFirestore.instance
+  //       .collection('users')
+  //       .doc(uid)
+  //       .collection('goals')
+  //       .doc(goal.id);
+
+  //   // 1. Mark goal as completed
+  //   await goalRef.update({'isCompleted': true});
+
+  //   // 2. Add +0.02 to the skill in selectedSkills map
+  //   final userRef = FirebaseFirestore.instance.collection('users').doc(uid);
+  //   await userRef.set({
+  //     'selectedSkills': {
+  //       goal.skill: FieldValue.increment(0.02),
+  //     },
+  //   }, SetOptions(merge: true));
+  // }
+
   Future<void> completeGoal(Goal goal) async {
     final uid = currentUser?.uid;
-    final goalRef = FirebaseFirestore.instance
+    final goalRef = _firestore
         .collection('users')
         .doc(uid)
         .collection('goals')
         .doc(goal.id);
 
-    // 1. Mark goal as completed
-    await goalRef.update({'isCompleted': true});
+    // Mark goal as completed and inactive
+    await goalRef.update({
+      'isCompleted': true,
+      'isActive': false,
+    });
 
-    // 2. Add +0.02 to the skill in selectedSkills map
-    final userRef = FirebaseFirestore.instance.collection('users').doc(uid);
+    // Add +0.15 to the skill in selectedSkills map
+    final userRef = _firestore.collection('users').doc(uid);
     await userRef.set({
       'selectedSkills': {
-        goal.skill: FieldValue.increment(0.02),
+        goal.skill: FieldValue.increment(0.15),
       },
     }, SetOptions(merge: true));
   }

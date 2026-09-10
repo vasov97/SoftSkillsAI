@@ -1033,6 +1033,174 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Teach me more'**
   String get teachMeMore;
+
+  /// No description provided for @skillQuiz.
+  ///
+  /// In en, this message translates to:
+  /// **'Skill Quiz'**
+  String get skillQuiz;
+
+  /// No description provided for @answered.
+  ///
+  /// In en, this message translates to:
+  /// **'answered'**
+  String get answered;
+
+  /// No description provided for @question.
+  ///
+  /// In en, this message translates to:
+  /// **'Question'**
+  String get question;
+
+  /// No description provided for @reflection.
+  ///
+  /// In en, this message translates to:
+  /// **'Self-reflection'**
+  String get reflection;
+
+  /// No description provided for @submitQuiz.
+  ///
+  /// In en, this message translates to:
+  /// **'Submit'**
+  String get submitQuiz;
+
+  /// No description provided for @quizPassed.
+  ///
+  /// In en, this message translates to:
+  /// **'Congratulations!'**
+  String get quizPassed;
+
+  /// No description provided for @quizFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'Not quite yet'**
+  String get quizFailed;
+
+  /// No description provided for @quizPassedMessage.
+  ///
+  /// In en, this message translates to:
+  /// **'You\'ve demonstrated strong understanding of this skill. Your goal is now complete!'**
+  String get quizPassedMessage;
+
+  /// No description provided for @quizFailedMessage.
+  ///
+  /// In en, this message translates to:
+  /// **'You need 90% to pass. Review the subtasks and try again when ready.'**
+  String get quizFailedMessage;
+
+  /// No description provided for @quizFailedSubtasksAdded.
+  ///
+  /// In en, this message translates to:
+  /// **'2 additional subtasks have been added. Complete all subtasks to retake the quiz.'**
+  String get quizFailedSubtasksAdded;
+
+  /// No description provided for @quizFailedSubtasksReset.
+  ///
+  /// In en, this message translates to:
+  /// **'Subtasks reset with 2 new ones added. Keep practicing!'**
+  String get quizFailedSubtasksReset;
+
+  /// No description provided for @tryAgain.
+  ///
+  /// In en, this message translates to:
+  /// **'Back to goal'**
+  String get tryAgain;
+
+  /// No description provided for @onboardingWelcomeTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Meet Skillena'**
+  String get onboardingWelcomeTitle;
+
+  /// No description provided for @onboardingWelcomeSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Your personal AI coach for soft skills that actually matter'**
+  String get onboardingWelcomeSubtitle;
+
+  /// No description provided for @onboardingSkillsTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'20+ soft skills to master'**
+  String get onboardingSkillsTitle;
+
+  /// No description provided for @onboardingSkillsSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'From communication to leadership — grow the skills that shape your career'**
+  String get onboardingSkillsSubtitle;
+
+  /// No description provided for @onboardingChatTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Chat with your AI coach'**
+  String get onboardingChatTitle;
+
+  /// No description provided for @onboardingChatSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Ask questions, get tips, and practice real scenarios anytime'**
+  String get onboardingChatSubtitle;
+
+  /// No description provided for @onboardingChatBubble1.
+  ///
+  /// In en, this message translates to:
+  /// **'How do I handle a difficult conversation?'**
+  String get onboardingChatBubble1;
+
+  /// No description provided for @onboardingChatBubble2.
+  ///
+  /// In en, this message translates to:
+  /// **'Listen first, react second'**
+  String get onboardingChatBubble2;
+
+  /// No description provided for @onboardingChatBubble3.
+  ///
+  /// In en, this message translates to:
+  /// **'Let me give you 5 steps...'**
+  String get onboardingChatBubble3;
+
+  /// No description provided for @onboardingGoalsTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Set goals, see progress'**
+  String get onboardingGoalsTitle;
+
+  /// No description provided for @onboardingGoalsSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Break big goals into small daily steps and track your growth'**
+  String get onboardingGoalsSubtitle;
+
+  /// No description provided for @onboardingGoalExample.
+  ///
+  /// In en, this message translates to:
+  /// **'Give a confident presentation'**
+  String get onboardingGoalExample;
+
+  /// No description provided for @onboardingInterestsTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Which skills matter most to you?'**
+  String get onboardingInterestsTitle;
+
+  /// No description provided for @onboardingInterestsSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Pick a few — we\'ll personalize your experience'**
+  String get onboardingInterestsSubtitle;
+
+  /// No description provided for @onboardingReadyTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'You\'re all set!'**
+  String get onboardingReadyTitle;
+
+  /// No description provided for @onboardingReadySubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Let\'s build your soft skills, one conversation at a time'**
+  String get onboardingReadySubtitle;
 }
 
 class _AppLocalizationsDelegate

@@ -113,21 +113,20 @@ class Goal {
       return false;
     }).toList();
 
-    // Normalize lengths: keep up to 5; if fewer, pad; if none, create 5 blanks.
-    const targetLen = 5;
-    List<String> normSubtasks = List<String>.from(subtasks.take(targetLen));
-    List<bool> normDone = List<bool>.from(subtasksDone.take(targetLen));
+    // Use actual length from Firestore, don't cap
+    List<String> normSubtasks = List<String>.from(subtasks);
+    List<bool> normDone = List<bool>.from(subtasksDone);
 
     if (normSubtasks.isEmpty) {
-      normSubtasks = List<String>.filled(targetLen, '');
+      normSubtasks = List<String>.filled(5, '');
     }
-    final maxLen =
-        normSubtasks.length < targetLen ? targetLen : normSubtasks.length;
-    while (normSubtasks.length < maxLen) {
-      normSubtasks.add('');
-    }
-    while (normDone.length < maxLen) {
+
+    // Align done array to subtasks length
+    while (normDone.length < normSubtasks.length) {
       normDone.add(false);
+    }
+    if (normDone.length > normSubtasks.length) {
+      normDone.removeRange(normSubtasks.length, normDone.length);
     }
 
     // Optional tracking fields

@@ -484,4 +484,99 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get teachMeMore => 'Teach me more';
+
+  @override
+  String get skillQuiz => 'Skill Quiz';
+
+  @override
+  String get answered => 'answered';
+
+  @override
+  String get question => 'Question';
+
+  @override
+  String get reflection => 'Self-reflection';
+
+  @override
+  String get submitQuiz => 'Submit';
+
+  @override
+  String get quizPassed => 'Congratulations!';
+
+  @override
+  String get quizFailed => 'Not quite yet';
+
+  @override
+  String get quizPassedMessage =>
+      'You\'ve demonstrated strong understanding of this skill. Your goal is now complete!';
+
+  @override
+  String get quizFailedMessage =>
+      'You need 90% to pass. Review the subtasks and try again when ready.';
+
+  @override
+  String get quizFailedSubtasksAdded =>
+      '2 additional subtasks have been added. Complete all subtasks to retake the quiz.';
+
+  @override
+  String get quizFailedSubtasksReset =>
+      'Subtasks reset with 2 new ones added. Keep practicing!';
+
+  @override
+  String get tryAgain => 'Back to goal';
+
+  @override
+  String get onboardingWelcomeTitle => 'Meet Skillena';
+
+  @override
+  String get onboardingWelcomeSubtitle =>
+      'Your personal AI coach for soft skills that actually matter';
+
+  @override
+  String get onboardingSkillsTitle => '20+ soft skills to master';
+
+  @override
+  String get onboardingSkillsSubtitle =>
+      'From communication to leadership — grow the skills that shape your career';
+
+  @override
+  String get onboardingChatTitle => 'Chat with your AI coach';
+
+  @override
+  String get onboardingChatSubtitle =>
+      'Ask questions, get tips, and practice real scenarios anytime';
+
+  @override
+  String get onboardingChatBubble1 =>
+      'How do I handle a difficult conversation?';
+
+  @override
+  String get onboardingChatBubble2 => 'Listen first, react second';
+
+  @override
+  String get onboardingChatBubble3 => 'Let me give you 5 steps...';
+
+  @override
+  String get onboardingGoalsTitle => 'Set goals, see progress';
+
+  @override
+  String get onboardingGoalsSubtitle =>
+      'Break big goals into small daily steps and track your growth';
+
+  @override
+  String get onboardingGoalExample => 'Give a confident presentation';
+
+  @override
+  String get onboardingInterestsTitle => 'Which skills matter most to you?';
+
+  @override
+  String get onboardingInterestsSubtitle =>
+      'Pick a few — we\'ll personalize your experience';
+
+  @override
+  String get onboardingReadyTitle => 'You\'re all set!';
+
+  @override
+  String get onboardingReadySubtitle =>
+      'Let\'s build your soft skills, one conversation at a time';
 }
